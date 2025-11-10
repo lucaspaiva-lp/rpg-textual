@@ -15,7 +15,7 @@ def menu() -> None:
         op = input("> ").strip()
 
         if op == "1":
-            jogo.menu_criar_personagem()
+            jogo.criar_personagem()
         elif op == "2":
             jogo.menu_missao()
         elif op == "3":

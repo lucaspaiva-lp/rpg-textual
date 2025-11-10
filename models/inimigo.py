@@ -3,47 +3,40 @@ from .base import Entidade, Atributos
 
 
 class Inimigo(Entidade):
-
-    class Inimigo(Entidade):
-     class inimigo:
-        def_init_(self,nome, vida, ataque, defesa, efeitos):
-            self.nome = nome
-            self.vida = vida
-            self.ataque = ataque
-            self.defesa = defesa
-            self.efeitos = {"sangramento": {"dano": 2, "turnos": 3}}
+    class inimigo:
+    def_init_(self,nome, vida, ataque, defesa, efeitos):
+        self.nome = nome
+        self.vida = vida
+        self.ataque = ataque
+        self.defesa = defesa
+        self.efeitos = {"sangramento": {"dano": 2, "turnos": 3}}
 
 
-        def calcular_dano_base(self):
-            return self.ataque
+    def calcular_dano_base(self):
+        return self.ataque
      
-        def receber_dano(self, dano):
-               dano_final = max(0, dano - self.defesa)
-               self.vida -= dano_final
-               if self.vida <0:
-                    self.vida = 0
-                    return dano_final
+    def receber_dano(self, dano):
+        dano_final = max(0, dano - self.defesa)
+        self.vida -= dano_final
+        if self.vida <0:
+        self.vida = 0
+        return dano_final
                
-        def esta_vivo(self):
-            return self.vida > 0
+    def esta_vivo(self):
+        return self.vida > 0
      
-
-
 class goblin(Inimigo):
     def_init_(self, nome):
         super()._init_(nome, vida = 90, ataque = 7, defesa = 7)
         
-        def habilidade_especial(self, alvo):
-         #Furia goblin: o goblin se enfurece reduzindo sua defesa em -2 , e aumentando seu ataque em +2.
-         if self.defesa = 7:
-            self.defesa -= 2
-            self.ataque += 2
+    def habilidade_especial(self, alvo):
+    #Furia goblin: o goblin se enfurece reduzindo sua defesa em -2 , e aumentando seu ataque em +2.
+    if  self.defesa = 7:
+        self.defesa -= 2
+        self.ataque += 2
         
-        alvo.receber_dano(ataque)
-            return self.ataque
-
-
-
+    def alvo.receber_dano(ataque)
+    return self.ataque
 
 class ladrao(Inimigo):
     def_init_(self, nome):

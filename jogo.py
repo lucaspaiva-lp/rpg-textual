@@ -19,30 +19,70 @@ class Jogo:
         self._ultimo_save = None
         self._ultimo_load = None
 
-    def menu_criar_personagem(self) -> None:
-        while True:
-            print("\n=== Criar Personagem ===")
-            print(f"Nome atual: {self.personagem['nome'] or '(não definido)'}")
-            print(f"Arquétipo:  {self.personagem['arquetipo'] or '(não definido)'}")
-            print("[1] Definir nome")
-            print("[2] Escolher arquétipo")
-            print("[3] Confirmar criação")
-            print("[9] Ajuda")
-            print("[0] Voltar")
-            op = input("> ").strip()
+    from aventura_classes import Guerreiro, Mago
 
-            if op == "1":
-                self._definir_nome()
-            elif op == "2":
-                self._escolher_arquetipo()
-            elif op == "3":
-                self._confirmar_criacao()
-            elif op == "9":
-                self._ajuda_criar_personagem()
-            elif op == "0":
-                break
+def criar_personagem():
+    print("=== Criação de Personagem ===")
+    nome = input("Digite o nome do seu personagem: ").strip()
+
+    print("\nEscolha uma classe:")
+    print("[1] Guerreiro - Alta vida e defesa, ataque físico forte.")
+    print("[2] Mago - Usa mana e ataques mágicos poderosos.")
+
+    while True:
+        escolha = input("> ").strip()
+        if escolha == "1":
+            personagem = Guerreiro(nome)
+            break
+        elif escolha == "2":
+            personagem = Mago(nome)
+            break
+        else:
+            print("Opção inválida. Escolha 1 ou 2.")
+
+    print("\nPersonagem criado com sucesso!")
+    print(f"Nome: {personagem.nome}")
+    print(f"Classe: {'Guerreiro' if isinstance(personagem, Guerreiro) else 'Mago'}")
+    print(f"Vida: {personagem.vida}")
+    print(f"Ataque: {personagem.ataque}")
+    print(f"Defesa: {personagem.defesa}")
+    print(f"Mana: {personagem.mana}")
+    return personagem
+
+
+def menu_principal():
+    personagem = None
+
+    while True:
+        print("\n=== MENU PRINCIPAL ===")
+        print("[1] Criar novo personagem")
+        print("[2] Ver informações do personagem")
+        print("[0] Sair")
+        opcao = input("> ").strip()
+
+        if opcao == "1":
+            personagem = criar_personagem()
+        elif opcao == "2":
+            if personagem:
+                print("\n=== Dados do Personagem ===")
+                print(f"Nome: {personagem.nome}")
+                print(f"Classe: {'Guerreiro' if isinstance(personagem, Guerreiro) else 'Mago'}")
+                print(f"Vida: {personagem.vida}")
+                print(f"Ataque: {personagem.ataque}")
+                print(f"Defesa: {personagem.defesa}")
+                print(f"Mana: {personagem.mana}")
+                print(f"Inventário: {personagem.get_inventario()}")
             else:
-                print("Opção inválida.")
+                print("Nenhum personagem criado ainda.")
+        elif opcao == "0":
+            print("Saindo do jogo...")
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
+
+
+if _name_ == "_main_":
+    menu_principal()
 
     def _definir_nome(self) -> None:
         nome = input("Digite o nome do personagem: ").strip()

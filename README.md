@@ -193,6 +193,21 @@ Ele está sendo desenvolvido de forma  **colaborativa em equipe** , com divisão
 
 ---
 
+
+
+## 👥 Equipe
+
+- **[@MateusAlves](https://github.com/AlvesTK)** — Desenvolvimento de Personagens
+- **[@Rodrigo](https://github.com/RodrigoDevBack)** —
+- **[@GuiSilva](https://github.com/Gohanphp)** — Sistema de Inimigos
+- **[@LucasPaiva](https://github.com/lucaspaiva-lp)** — Organização, GitHub e Menu
+- **[@MariaEduarda](https://github.com/mariaeduarda63)** — Design de Missões
+- **[@Nicolas](https://github.com/nicolas021007)** — 
+- **[@Rian](https://github.com/RianAlvesTi)** — 
+- **[@Alexandre](https://github.com/alexandrexande)** —
+- **[@Felipe](https://github.com/FIGFelip)** —
+- **[@Cauan](https://github.com/Camp-1)** — 
+
 ## ✨ Créditos
 
 Projeto desenvolvido pela equipe de  (nome da equipe) **- 2025** , como parte da disciplina de  **Paradigmas de linguagens de programação em python** .

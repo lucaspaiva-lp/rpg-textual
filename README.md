@@ -193,20 +193,18 @@ Ele está sendo desenvolvido de forma  **colaborativa em equipe** , com divisão
 
 ---
 
-
-
 ## 👥 Equipe
 
 - **[@MateusAlves](https://github.com/AlvesTK)** — Desenvolvimento de Personagens
-- **[@Rodrigo](https://github.com/RodrigoDevBack)** —
+- **[@Rodrigo](https://github.com/RodrigoDevBack)** — Suporte Master e Github
 - **[@GuiSilva](https://github.com/Gohanphp)** — Sistema de Inimigos
-- **[@LucasPaiva](https://github.com/lucaspaiva-lp)** — Organização, GitHub e Menu
-- **[@MariaEduarda](https://github.com/mariaeduarda63)** — Design de Missões
-- **[@Nicolas](https://github.com/nicolas021007)** — 
-- **[@Rian](https://github.com/RianAlvesTi)** — 
-- **[@Alexandre](https://github.com/alexandrexande)** —
-- **[@Felipe](https://github.com/FIGFelip)** —
-- **[@Cauan](https://github.com/Camp-1)** — 
+- **[@LucasPaiva](https://github.com/lucaspaiva-lp)** — Organização, GitHub e Sistema de Menu
+- **[@MariaEduarda](https://github.com/mariaeduarda63)** — Sistema de Missões
+- **[@Nicolas](https://github.com/nicolas021007)** — Sistema de Inimigos
+- **[@Rian](https://github.com/RianAlvesTi)** — Sistema de Missões
+- **[@Alexandre](https://github.com/alexandrexande)** — Sistema de Menu
+- **[@Felipe](https://github.com/FIGFelip)** — Desenvolvimento de Personagens
+- **[@Cauan](https://github.com/Camp-1)** — Sistema de Inimigos
 
 ## ✨ Créditos
 

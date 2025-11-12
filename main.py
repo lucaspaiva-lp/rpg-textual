@@ -1,5 +1,5 @@
 from __future__ import annotations
-from jogo import Jogo
+from models.jogo import Jogo
 
 
 def menu() -> None:

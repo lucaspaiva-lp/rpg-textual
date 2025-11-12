@@ -1,3 +1,9 @@
+# =====================================================
+# ========== IMPORTAÇÕES PRINCIPAIS ===================
+# =====================================================
+# Define compatibilidade futura e importa classes e libs
+# usadas na persistência (salvar/carregar progresso).
+
 from __future__ import annotations
 import os
 import json
@@ -5,15 +11,11 @@ from models.aventura_classes import Guerreiro, Mago
 
 
 class Jogo:
-    """
-    Núcleo de controle do RPG textual.
+    """Controla o núcleo do RPG textual e o fluxo principal do jogo.
 
-    Centraliza o fluxo principal do jogo, incluindo menus, criação de personagens,
-    configuração de missões e operações simuladas de salvamento e carregamento.
-
-    Esta classe atua como ponto de entrada para integração futura com as demais camadas:
-    - models (Personagem, Inimigo, Missão)
-    - utils (Logger, Repositório)
+    Gerencia menus, criação de personagens, configuração de missões e
+    operações de salvamento e carregamento. Atua como ponto de entrada
+    para integração com outras camadas do sistema (models e utils).
     """
 
     def __init__(self) -> None:

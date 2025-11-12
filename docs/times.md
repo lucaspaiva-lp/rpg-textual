@@ -50,6 +50,7 @@
 **Integrante:**
 
 * Alexandre
+* Lucas Paiva
 
 **Responsabilidades:**
 

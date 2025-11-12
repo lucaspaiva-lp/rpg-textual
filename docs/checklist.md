@@ -11,7 +11,7 @@ Criar a base estrutural do jogo utilizando conceitos fundamentais de Programaç�
 #### **Implementar as classes básicas (Personagem, Inimigo, Missão, Jogo)**
 
 * [X] Estrutura da classe `Jogo` criada (menu, placeholders de métodos).
-* [X] Estrutura da classe `Missao` criada (com construtor e método `executar`).
+* [ ] Estrutura da classe `Missao` criada (com construtor e método `executar`).
 * [X] Estrutura base `Entidade` criada corretamente (vida, ataque, defesa, etc.).
 * [ ] Classe `Personagem` implementada com erros — métodos `__init__`, `calcular_dano_base` e `habilidade_especial` precisam ser corrigidos e finalizados.
 * [ ] Classe `Inimigo` implementada com erros de sintaxe (`def_init_`, `super()._init_`) e precisa ser revisada para rodar corretamente.
@@ -45,9 +45,6 @@ Criar a base estrutural do jogo utilizando conceitos fundamentais de Programaç�
 * [ ] Falta o mínimo de jogabilidade real — tudo ainda é simulado.
 
 ---
-
-
-
 
 ## **SEMANA 2 — Regras, Coleções e Funções**
 
@@ -112,8 +109,6 @@ Aprimorar o sistema de combate, inventário e missões, além de começar a estr
 > Versão com múltiplos inimigos, missões e inventário funcional, incluindo logs de turnos de batalha.
 
 ---
-
-
 
 ## **SEMANA 3 — Polimorfismo, Herança e Persistência**
 

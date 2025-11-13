@@ -14,12 +14,12 @@ def menu() -> None:
     jogo = Jogo()
 
     while True:
-        print("\n=== RPG OO — Menu Principal ===")
-        print("[1] Criar personagem")
-        print("[2] Encarar missão")
-        print("[3] Salvar")
-        print("[4] Carregar")
-        print("[0] Sair")
+        print('''\n=== RPG OO — Menu Principal ===
+        [1] Criar personagem
+        [2] Encarar missão
+        [3] Salvar
+        [4] Carregar
+        [0] Sair''')
 
         op = input("> ").strip()
 

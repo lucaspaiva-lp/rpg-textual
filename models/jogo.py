@@ -58,9 +58,9 @@ class Jogo:
         print("=== Criação de Personagem ===")
         nome = input("Digite o nome do seu personagem: ").strip()
 
-        print("""\nEscolha uma classe:
-        [1] Guerreiro - Alta vida e defesa, ataque físico forte.
-        [2] Mago - Usa mana e ataques mágicos poderosos.""")
+        print("\nEscolha uma classe:")
+        print("[1] Guerreiro - Alta vida e defesa, ataque físico forte.")
+        print("[2] Mago - Usa mana e ataques mágicos poderosos.")
 
         while True:
             escolha = input("> ").strip()
@@ -73,13 +73,13 @@ class Jogo:
             else:
                 print("Opção inválida. Escolha 1 ou 2.")
 
-    print(f"""\nPersonagem criado com sucesso!
-    Nome: {personagem.nome}
-    Classe: {'Guerreiro' if isinstance(personagem, Guerreiro) else 'Mago'}
-    Vida: {personagem.vida}
-    Ataque: {personagem.ataque}
-    Defesa: {personagem.defesa}
-    Mana: {personagem.mana}""")
+        print("\nPersonagem criado com sucesso!")
+        print(f"Nome: {personagem.nome}")
+        print(f"Classe: {'Guerreiro' if isinstance(personagem, Guerreiro) else 'Mago'}")
+        print(f"Vida: {personagem.vida}")
+        print(f"Ataque: {personagem.ataque}")
+        print(f"Defesa: {personagem.defesa}")
+        print(f"Mana: {personagem.mana}")
 
         self.personagem_obj = personagem
         self.personagem["nome"] = nome
@@ -101,13 +101,13 @@ class Jogo:
         Este método bloqueia a execução até que o usuário escolha sair.
         """
         while True:
-            print("""\n=== MENU PRINCIPAL ===
-            [1] Criar novo personagem
-            [2] Ver informações do personagem
-            [3] Missão
-            [4] Salvar Jogo (simulado)
-            [5] Carregar Jogo (simulado)
-            [0] Sair""")
+            print("\n=== MENU PRINCIPAL ===")
+            print("[1] Criar novo personagem")
+            print("[2] Ver informações do personagem")
+            print("[3] Missão")
+            print("[4] Salvar Jogo (simulado)")
+            print("[5] Carregar Jogo (simulado)")
+            print("[0] Sair")
 
             opcao = input("> ").strip()
 
@@ -135,14 +135,14 @@ class Jogo:
         """
         if hasattr(self, "personagem_obj"):
             p = self.personagem_obj
-            print(f"""\n=== Dados do Personagem ===")
-            Nome: {p.nome}
-            Classe: {self.personagem['arquetipo']}
-            Vida: {p.vida}
-            Ataque: {p.ataque}
-            Defesa: {p.defesa}
-            Mana: {p.mana}
-            Inventário: {p.get_inventario()}""")
+            print("\n=== Dados do Personagem ===")
+            print(f"Nome: {p.nome}")
+            print(f"Classe: {self.personagem['arquetipo']}")
+            print(f"Vida: {p.vida}")
+            print(f"Ataque: {p.ataque}")
+            print(f"Defesa: {p.defesa}")
+            print(f"Mana: {p.mana}")
+            print(f"Inventário: {p.get_inventario()}")
         else:
             print("Nenhum personagem criado ainda.")
 
@@ -158,15 +158,15 @@ class Jogo:
         Os valores são armazenados em `self.missao_config`.
         """
         while True:
-            print(f"""\n=== Missão ===")
-            Dificuldade atual: {self.missao_config['dificuldade']}
-            Cenário atual:     {self.missao_config['cenario']}
-            [1] Escolher dificuldade
-            [2] Escolher cenário
-            [3] Pré-visualizar missão
-            [4] Iniciar missão (placeholder)
-            [9] Ajuda
-            [0] Voltar""")
+            print("\n=== Missão ===")
+            print(f"Dificuldade atual: {self.missao_config['dificuldade']}")
+            print(f"Cenário atual:     {self.missao_config['cenario']}")
+            print("[1] Escolher dificuldade")
+            print("[2] Escolher cenário")
+            print("[3] Pré-visualizar missão")
+            print("[4] Iniciar missão (placeholder)")
+            print("[9] Ajuda")
+            print("[0] Voltar")
             op = input("> ").strip()
 
             if op == "1":
@@ -191,10 +191,10 @@ class Jogo:
         Mantém consistência com os valores permitidos:
         "Fácil", "Média" ou "Difícil".
         """
-        print("""\nDificuldades:
-        [1] Fácil
-        [2] Média
-        [3] Difícil""")
+        print("\nDificuldades:")
+        print("[1] Fácil")
+        print("[2] Média")
+        print("[3] Difícil")
         op = input("> ").strip()
         mapa = {"1": "Fácil", "2": "Média", "3": "Difícil"}
         dif = mapa.get(op)
@@ -210,11 +210,11 @@ class Jogo:
 
         Este método apenas altera o valor textual em `self.missao_config["cenario"]`.
         """
-        print("""\nCenários:
-        [1] Trilha
-        [2] Floresta
-        [3] Caverna
-        [4] Ruínas""")
+        print("\nCenários:")
+        print("[1] Trilha")
+        print("[2] Floresta")
+        print("[3] Caverna")
+        print("[4] Ruínas")
         op = input("> ").strip()
         mapa = {"1": "Trilha", "2": "Floresta", "3": "Caverna", "4": "Ruínas"}
         cen = mapa.get(op)
@@ -231,11 +231,11 @@ class Jogo:
         Placeholder — a lógica de geração de inimigos e recompensas
         será implementada em versões futuras.
         """
-        print(f"""\nPré-visualização da Missão
-        - Dificuldade: {self.missao_config['dificuldade']}
-        - Cenário:     {self.missao_config['cenario']}
-        - Inimigos e recompensas: (em breve)
-        - Regras de combate: (em breve)""")
+        print("\nPré-visualização da Missão")
+        print(f"- Dificuldade: {self.missao_config['dificuldade']}")
+        print(f"- Cenário:     {self.missao_config['cenario']}")
+        print("- Inimigos e recompensas: (em breve)")
+        print("- Regras de combate: (em breve)")
 
     def _iniciar_missao_placeholder(self) -> None:
         """
@@ -249,8 +249,10 @@ class Jogo:
             print("Crie um personagem antes de iniciar uma missão.")
             return
 
-        print(f"""\nIniciando missão...
-        Configuração atual: {self.missao_config['dificuldade']} - {self.missao_config['cenario']}""")
+        print("\nIniciando missão...")
+        print(
+            f"Configuração atual: {self.missao_config['dificuldade']} - {self.missao_config['cenario']}"
+        )
 
         # Cria inimigo simulado (não depende de Missao)
         inimigo = type(
@@ -302,10 +304,12 @@ class Jogo:
 
     def _ajuda_missao(self) -> None:
         """Exibe orientações sobre o uso do submenu de missões."""
-        print("""\nAjuda — Missão
-    - Selecione dificuldade e cenário.
-    - A opção 'Iniciar missão' executará apenas um placeholder.
-    - Uma futura implementação pode usar essas escolhas para montar encontros.""")
+        print("\nAjuda — Missão")
+        print("- Selecione dificuldade e cenário.")
+        print("- A opção 'Iniciar missão' executará apenas um placeholder.")
+        print(
+            "- Uma futura implementação pode usar essas escolhas para montar encontros."
+        )
 
     # =====================================================
     # ========== SALVAR E CARREGAR (PERSISTENTE) ==========
@@ -316,11 +320,11 @@ class Jogo:
         os.makedirs("saves", exist_ok=True)
 
         while True:
-            print("""\n=== Salvar ===
-            [1] Salvar rápido
-            [2] Salvar com nome
-            [9] Ajuda
-            [0] Voltar""")
+            print("\n=== Salvar ===")
+            print("[1] Salvar rápido")
+            print("[2] Salvar com nome")
+            print("[9] Ajuda")
+            print("[0] Voltar")
             op = input("> ").strip()
 
             if op == "1":
@@ -373,10 +377,10 @@ class Jogo:
 
     def _ajuda_salvar(self) -> None:
         """Exibe instruções sobre o menu de salvamento."""
-        print("""\nAjuda — Salvar
-        - Agora o jogo salva dados reais em formato JSON.
-        - Os arquivos ficam armazenados na pasta `saves/`.
-        - Use nomes curtos e sem espaços para evitar erros.""")
+        print("\nAjuda — Salvar")
+        print("- Agora o jogo salva dados reais em formato JSON.")
+        print("- Os arquivos ficam armazenados na pasta `saves/`.")
+        print("- Use nomes curtos e sem espaços para evitar erros.")
 
     # =====================================================
     # ========== CARREGAR ================================
@@ -387,11 +391,11 @@ class Jogo:
         os.makedirs("saves", exist_ok=True)
 
         while True:
-            print("""\n=== Carregar ===
-            [1] Carregar último save
-            [2] Carregar por nome
-            [9] Ajuda
-            [0] Voltar""")
+            print("\n=== Carregar ===")
+            print("[1] Carregar último save")
+            print("[2] Carregar por nome")
+            print("[9] Ajuda")
+            print("[0] Voltar")
             op = input("> ").strip()
 
             if op == "1":
@@ -457,10 +461,10 @@ class Jogo:
 
     def _ajuda_carregar(self) -> None:
         """Exibe orientações sobre o sistema de carregamento."""
-        print("""\nAjuda — Carregar
-        - Carrega arquivos JSON localizados na pasta `saves/`.
-        - Use o mesmo nome usado ao salvar (sem `.json`).
-        - Apenas arquivos válidos e bem formatados serão aceitos.""")
+        print("\nAjuda — Carregar")
+        print("- Carrega arquivos JSON localizados na pasta `saves/`.")
+        print("- Use o mesmo nome usado ao salvar (sem `.json`).")
+        print("- Apenas arquivos válidos e bem formatados serão aceitos.")
 
 
 # =====================================================

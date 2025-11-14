@@ -210,4 +210,4 @@ Ele está sendo desenvolvido de forma **colaborativa em equipe**, com divisão d
 
 ## ✨ Créditos
 
-Projeto desenvolvido pela equipe de  (nome da equipe) **- 2025** , como parte da disciplina de  **Paradigmas de linguagens de programação em python** .
+Projeto desenvolvido pela equipe de **NEMESIS** **- 2025**, como parte da disciplina de  **Paradigmas de linguagens de programação em python**.

@@ -47,7 +47,8 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
 
           from: "GitHub Notifier <${{ secrets.SMTP_USERNAME }}>"
-          to: "lucaspaiva-lp@proton.me"
+          # 👉 Enviar para múltiplos emails
+          to: "lucaspaiva-lp@proton.me, rodrigomoraes3040@gmail.com"
 
           subject: "📧 Branch Updated: ${{ github.ref_name }}"
           html_body: file://email.html

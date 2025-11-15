@@ -1,0 +1,13 @@
+# ignorar pasta de saves (não deve ir pro GitHub)
+saves/
+
+# ignorar pycache do Python
+__pycache__/
+*.pyc
+
+# ignorar configs locais do VSCode
+.vscode/
+
+# ignorar arquivos temporários
+*.tmp
+*.log

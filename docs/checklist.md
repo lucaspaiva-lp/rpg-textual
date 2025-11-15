@@ -13,7 +13,7 @@ Criar a base estrutural do jogo utilizando conceitos fundamentais de Programaç�
 * [X] Estrutura da classe `Jogo` criada (menu, placeholders de métodos).
 * [ ] Estrutura da classe `Missao` criada (com construtor e método `executar`).
 * [X] Estrutura base `Entidade` criada corretamente (vida, ataque, defesa, etc.).
-* [ ] Classe `Personagem` implementada com erros — métodos `__init__`, `calcular_dano_base` e `habilidade_especial` precisam ser corrigidos e finalizados.
+* [X] Classe `Personagem` implementada com erros — métodos `__init__`, `calcular_dano_base` e `habilidade_especial` precisam ser corrigidos e finalizados.
 * [X] Classe `Inimigo` implementada com erros de sintaxe (`def_init_`, `super()._init_`) e precisa ser revisada para rodar corretamente.
 * [ ] Classes derivadas (`Guerreiro`, `Mago`, `Goblin`, `Ladrão`) ainda precisam de ajustes de sintaxe e integração funcional.
 

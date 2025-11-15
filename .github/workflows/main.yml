@@ -1,0 +1,38 @@
+name: Notify Branch Update
+
+on:
+  push:
+    branches:
+      - main
+      - development
+      - feature/*
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Send Email via SMTP
+        uses: ksatriow/action-mailer@v1
+        with:
+          smtp-server: smtp.gmail.com
+          smtp-port: 465
+          smtp-secure: true
+          from-email: lu4ckex@gmail.com # seu email de envio
+          to-email: lucaspaiva-lp@proton.me # quem vai receber
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "📧 Branch Update Notification"
+          html-template: "./.github/templates/branch-update.html"
+          template-variables: >
+            {
+              "branch": "${{ github.ref_name }}",
+              "commit": "${{ github.sha }}",
+              "author": "${{ github.event.head_commit.author.name }}",
+              "message": "${{ github.event.head_commit.message }}",
+              "date": "${{ github.event.head_commit.timestamp }}",
+              "status": "Updated"
+            }

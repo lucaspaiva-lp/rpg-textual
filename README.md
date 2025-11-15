@@ -2,11 +2,11 @@
 
 ## 📘 Sobre o Projeto
 
-Este projeto tem como objetivo o desenvolvimento de um  **RPG textual em Python** , utilizando  **conceitos de Programação Orientada a Objetos (POO)** , como herança, polimorfismo, abstração e encapsulamento.
+Este projeto tem como objetivo o desenvolvimento de um **RPG textual em Python**, utilizando **conceitos de Programação Orientada a Objetos (POO)**, como herança, polimorfismo, abstração e encapsulamento.
 
-O jogo permite  **criar personagens** ,  **enfrentar missões** , **lutar contra inimigos** e  **salvar/carregar o progresso**.
+O jogo permite **criar personagens**, **enfrentar missões**, **lutar contra inimigos** e  **salvar/carregar o progresso**.
 
-Ele está sendo desenvolvido de forma  **colaborativa em equipe** , com divisão de tarefas por área (Personagem, Inimigo, Missão, Menu, etc).
+Ele está sendo desenvolvido de forma **colaborativa em equipe**, com divisão de tarefas por área (Personagem, Inimigo, Missão, Menu, etc).
 
 ---
 
@@ -208,4 +208,4 @@ Ele está sendo desenvolvido de forma  **colaborativa em equipe** , com divisão
 
 ## ✨ Créditos
 
-Projeto desenvolvido pela equipe de  (nome da equipe) **- 2025** , como parte da disciplina de  **Paradigmas de linguagens de programação em python** .
+Projeto desenvolvido pela equipe de **NEMESIS** **- 2025**, como parte da disciplina de **Paradigmas de linguagens de programação em python**.

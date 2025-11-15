@@ -16,17 +16,22 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Send Email via SMTP
-        uses: ksatriow/action-mailer@v1
+        uses: ksatriow/action-mailer@main
         with:
           smtp-server: smtp.gmail.com
           smtp-port: 465
           smtp-secure: true
-          from-email: lu4ckex@gmail.com # seu email de envio
-          to-email: lucaspaiva-lp@proton.me # quem vai receber
+
+          from-email: ${{ secrets.SMTP_USERNAME }}
+          to-email: "lucaspaiva-lp@proton.me"
+
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
-          subject: "📧 Branch Update Notification"
+
+          subject: "📧 Branch Update: ${{ github.ref_name }}"
+
           html-template: "./.github/templates/branch-update.html"
+
           template-variables: >
             {
               "branch": "${{ github.ref_name }}",

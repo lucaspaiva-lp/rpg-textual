@@ -105,7 +105,18 @@ class Demonio(Inimigo):
                 return self.ataque
         
             
+
+
+class Boss(Inimigo):
+    def __init__(self, nome, nome_ataque):
+        super.__init__(nome = "Dark lord",vida = 120, ataque = 80, defesa = 75, nome_ataque ="Golpe Sombrio")
+        
+    def habilidade_especial(self, alvo):
+        
+        if self.ataque == 80 :
+            print("{self.nome} usou {self.nome_ataque} .")
             
+            return self.ataque
             
         
         

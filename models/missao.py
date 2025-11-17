@@ -7,6 +7,7 @@ from .inimigo import Inimigo
 @dataclass
 class ResultadoMissao:
     """Resultado ilustrativo (placeholder)."""
+
     venceu: bool = False
     detalhes: str = "Missão simulada."
 
@@ -31,4 +32,6 @@ class Missao:
         print(f"Inimigo: {self.inimigo.nome} (HP: {self.inimigo._atrib.vida})")
         print(f"Mecânica de combate será implementada futuramente para {p.nome}.")
         print("Retornando ao menu...\n")
-        return ResultadoMissao(venceu=False, detalhes="Execução placeholder; sem combate.")
+        return ResultadoMissao(
+            venceu=False, detalhes="Execução placeholder; sem combate."
+        )

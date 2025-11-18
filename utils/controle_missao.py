@@ -105,12 +105,10 @@ def iniciar_missao_placeholder(jogo) -> None:
         return
 
     print("\nIniciando missão...")
-    print(
-        f"Configuração atual: {jogo.missao_config['dificuldade']} - "
-        f"{jogo.missao_config['cenario']}"
+    jogo.logger.log(
+        f"Missão iniciada — {jogo.missao_config['dificuldade']} / {jogo.missao_config['cenario']}"
     )
 
-    # Cria inimigo simples (não depende da classe Missao)
     inimigo = type(
         "InimigoSimulado",
         (),
@@ -119,43 +117,51 @@ def iniciar_missao_placeholder(jogo) -> None:
 
     jogador = jogo.personagem_obj
     turno = 1
-    log_batalha = []
 
-    # Loop de combate
     while jogador.vida > 0 and inimigo.vida > 0:
         print(f"\n--- Turno {turno} ---")
+        jogo.logger.log_batalha(f"--- Turno {turno} ---")
 
         # Ataque do jogador
         dano_jogador = max(jogador.ataque - inimigo.defesa, 0)
         inimigo.vida -= dano_jogador
-        log_batalha.append(
+
+        evento_jogador = (
             f"{jogador.nome} causou {dano_jogador} de dano em {inimigo.nome}."
         )
+        print(evento_jogador)
+        jogo.logger.log_batalha(evento_jogador)
 
         if inimigo.vida <= 0:
+            jogo.logger.log_batalha(f"{inimigo.nome} foi derrotado!")
             print(f"{inimigo.nome} foi derrotado!")
             break
 
         # Ataque do inimigo
         dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
         jogador.vida -= dano_inimigo
-        log_batalha.append(
+
+        evento_inimigo = (
             f"{inimigo.nome} causou {dano_inimigo} de dano em {jogador.nome}."
         )
+        print(evento_inimigo)
+        jogo.logger.log_batalha(evento_inimigo)
 
         print(
             f"🧙 {jogador.nome} HP: {jogador.vida} | ⚔️ {inimigo.nome} HP: {inimigo.vida}"
         )
+        jogo.logger.log_batalha(
+            f"HP — {jogador.nome}: {jogador.vida} | {inimigo.nome}: {inimigo.vida}"
+        )
+
         turno += 1
 
-    resultado = "✅ Vitória!" if jogador.vida > 0 else "💀 Derrota..."
+    # Resultado final
+    resultado = "Vitória" if jogador.vida > 0 else "Derrota"
+    jogo.logger.log_batalha(f"Resultado: {resultado}")
+
     print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
-
-    print("\n=== Log de Batalha ===")
-    for evento in log_batalha:
-        print(evento)
-
-    print("\nRetornando ao menu de Missão...")
+    print("\nRetornando ao menu...")
 
 
 # -----------------------------------------------------

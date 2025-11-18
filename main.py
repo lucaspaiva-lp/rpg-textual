@@ -1,5 +1,6 @@
 from __future__ import annotations
 from models.jogo import Jogo
+from models.controle_logs import menu_logs
 
 
 def menu() -> None:
@@ -21,6 +22,7 @@ def menu() -> None:
         print("[2] Missão")
         print("[3] Salvar")
         print("[4] Carregar")
+        print("[5] Visualizar logs")
         print("[0] Sair")
 
         op = input("> ").strip()
@@ -33,6 +35,8 @@ def menu() -> None:
             jogo.menu_salvar()
         elif op == "4":
             jogo.menu_carregar()
+        elif op == "5":
+            menu_logs(jogo)
         elif op == "0":
             print("Até logo!")
             break

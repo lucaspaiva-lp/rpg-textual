@@ -1,6 +1,7 @@
 import os
 import json
 from models.personagem import Guerreiro, Mago
+from models.logger import Logger
 
 
 class RepositorioJogo:
@@ -54,6 +55,9 @@ class RepositorioJogo:
             jogo.personagem = dados.get("personagem", {})
             jogo.missao_config = dados.get("missao_config", {})
 
+            # -------------------------
+            #       RECRIAR PERSONAGEM
+            # -------------------------
             if "personagem_detalhes" in dados:
                 det = dados["personagem_detalhes"]
                 nome = jogo.personagem.get("nome")
@@ -69,11 +73,18 @@ class RepositorioJogo:
 
                 p = jogo.personagem_obj
 
+                # restaura atributos
                 p.vida = det.get("vida", p.vida)
                 p.ataque = det.get("ataque", p.ataque)
                 p.defesa = det.get("defesa", p.defesa)
                 p.mana = det.get("mana", p.mana)
                 p.inventario = det.get("inventario", [])
+
+            # -------------------------
+            #       RESTAURAR LOGS
+            # -------------------------
+            if hasattr(jogo, "logger") and "logs" in dados:
+                jogo.logger.importar(dados["logs"])
 
             self.ultimo_save = caminho
             jogo._ultimo_load = caminho
@@ -93,6 +104,17 @@ class RepositorioJogo:
             "missao_config": jogo.missao_config,
         }
 
+        # -----------------------
+        # Salvar LOGS
+        # -----------------------
+        if hasattr(jogo, "logger") and jogo.logger is not None:
+            dados["logs"] = jogo.logger.exportar()
+        else:
+            dados["logs"] = []
+
+        # -----------------------
+        # Detalhes do personagem
+        # -----------------------
         if jogo.personagem_obj:
             p = jogo.personagem_obj
 

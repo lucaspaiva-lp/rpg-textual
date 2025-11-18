@@ -1,12 +1,14 @@
+from models.inventario import Inventario, Item
+
 # ============================================
-# PERSONAGENS DO JOGO (versão estável)
+# CLASSE BASE
 # ============================================
 
 
 class Aventureiro:
     """
-    Classe base usada pelo SEU jogo.
-    Todos os personagens jogáveis herdam dela.
+    Classe base para todos os personagens jogáveis.
+    Contém atributos comuns, inventário, métodos de combate e utilidades.
     """
 
     def __init__(self, nome: str, vida: int, ataque: int, defesa: int, mana: int = 0):
@@ -16,44 +18,17 @@ class Aventureiro:
         self.defesa = defesa
         self.mana = mana
 
-        # Inventário é fundamental para evitar o erro no salvamento
-        self.inventario: list = []
-
-    # -------------------------
-    # GETTERS E UTILIDADES
-    # -------------------------
-
-    def get_ataque(self) -> int:
-        return self.ataque
-
-    def get_mana(self) -> int:
-        return self.mana
-
-    def set_mana(self, valor: int) -> None:
-        self.mana = valor
-
-    def get_inventario(self) -> list:
-        return self.inventario
-
-    # -------------------------
-    # INVENTÁRIO
-    # -------------------------
-
-    def adicionar_item(self, item):
-        self.inventario.append(item)
-
-    def remover_item(self, item):
-        if item in self.inventario:
-            self.inventario.remove(item)
+        # Inventário integrado
+        self.inventario = Inventario()
 
     # -------------------------
     # COMBATE
     # -------------------------
 
     def receber_dano(self, dano: float) -> bool:
+        """Aplica dano considerando defesa. Retorna False se morreu."""
         dano_final = max(0, dano - self.defesa)
         self.vida -= dano_final
-
         if self.vida <= 0:
             self.vida = 0
             return False
@@ -62,20 +37,36 @@ class Aventureiro:
     def esta_vivo(self) -> bool:
         return self.vida > 0
 
+    # -------------------------
+    # INVENTÁRIO
+    # -------------------------
+
+    def adicionar_item(self, item: Item):
+        self.inventario.adicionar_item(item)
+
+    def remover_item(self, item: Item):
+        self.inventario.remover_item(item)
+
+    def listar_inventario(self):
+        return self.inventario.itens
+
 
 # ============================================
-#           CLASSES ESPECÍFICAS
+# CLASSES ESPECÍFICAS
 # ============================================
 
 
 class Guerreiro(Aventureiro):
     """
-    Personagem focado em força e defesa.
-    Golpe Especial: golpe poderoso com mitigação parcial da defesa do inimigo.
+    Personagem focado em vida, ataque físico e defesa.
+    Golpe especial: dano aumentado com mitigação parcial da defesa do inimigo.
     """
 
     def __init__(self, nome: str):
-        super().__init__(nome, vida=120, ataque=15, defesa=10)
+        super().__init__(nome, vida=120, ataque=15, defesa=10, mana=0)
+        # Inventário inicial com poções
+        self.inventario.adicionar_item(Item("Poção de Cura", 30))
+        self.inventario.adicionar_item(Item("Poção de Cura", 30))
 
     def habilidade_especial(self, alvo: Aventureiro) -> float:
         dano = self.ataque * 1.5
@@ -87,17 +78,19 @@ class Guerreiro(Aventureiro):
 class Mago(Aventureiro):
     """
     Personagem focado em mana e dano mágico.
-    Golpe Especial: feitiço de alto dano que custa mana.
+    Golpe especial: feitiço poderoso que consome mana.
     """
 
     def __init__(self, nome: str):
         super().__init__(nome, vida=80, ataque=10, defesa=5, mana=100)
+        # Inventário inicial com poções
+        self.inventario.adicionar_item(Item("Poção de Cura", 30))
+        self.inventario.adicionar_item(Item("Poção de Cura", 30))
 
     def habilidade_especial(self, alvo: Aventureiro) -> float:
         if self.mana < 20:
             print("⚠ Mana insuficiente para lançar magia especial!")
             return 0
-
         self.mana -= 20
         dano_magico = self.ataque * 2.5
         alvo.receber_dano(dano_magico)

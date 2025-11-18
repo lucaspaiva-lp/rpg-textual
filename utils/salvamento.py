@@ -1,13 +1,14 @@
 import os
 import json
-from models.personagem import Guerreiro, Mago
+from models.personagem import Guerreiro, Mago, Aventureiro
+from models.inventario import Inventario, Item
 from models.logger import Logger
 
 
 class RepositorioJogo:
     """
     Repositório responsável por SALVAR e CARREGAR o progresso.
-    Agora totalmente orientado a objetos e compatível com o projeto atual.
+    Totalmente orientado a objetos e compatível com o projeto atual.
     """
 
     def __init__(self, pasta="saves"):
@@ -34,12 +35,9 @@ class RepositorioJogo:
     def salvar(self, jogo, caminho):
         try:
             dados = self._montar_dados(jogo)
-
             with open(caminho, "w", encoding="utf-8") as arq:
                 json.dump(dados, arq, indent=4, ensure_ascii=False)
-
             print(f"✔ Progresso salvo em: {caminho}")
-
         except Exception as e:
             print(f"❌ Erro ao salvar: {e}")
 
@@ -71,14 +69,20 @@ class RepositorioJogo:
                 else:
                     jogo.personagem_obj = Guerreiro(nome or "SemNome")
 
-                p = jogo.personagem_obj
+                p: Aventureiro = jogo.personagem_obj
 
-                # restaura atributos
+                # restaura atributos básicos
                 p.vida = det.get("vida", p.vida)
                 p.ataque = det.get("ataque", p.ataque)
                 p.defesa = det.get("defesa", p.defesa)
                 p.mana = det.get("mana", p.mana)
-                p.inventario = det.get("inventario", [])
+
+                # reconstrói o inventário
+                p.inventario = Inventario()
+                for item_data in det.get("inventario", []):
+                    p.inventario.adicionar_item(
+                        Item(item_data["nome"], item_data["valor"])
+                    )
 
             # -------------------------
             #       RESTAURAR LOGS
@@ -88,7 +92,6 @@ class RepositorioJogo:
 
             self.ultimo_save = caminho
             jogo._ultimo_load = caminho
-
             print(f"✔ Jogo carregado de: {caminho}")
 
         except Exception as e:
@@ -116,15 +119,29 @@ class RepositorioJogo:
         # Detalhes do personagem
         # -----------------------
         if jogo.personagem_obj:
-            p = jogo.personagem_obj
+            p: Aventureiro = jogo.personagem_obj
+
+            # Serializa inventário de forma segura
+            inventario_serializado = []
+            if hasattr(p, "inventario") and hasattr(p.inventario, "itens"):
+                for item in p.inventario.itens:
+                    inventario_serializado.append(
+                        {
+                            "nome": getattr(item, "nome", "Item Desconhecido"),
+                            "valor": getattr(item, "valor", 0),
+                        }
+                    )
 
             dados["personagem_detalhes"] = {
                 "vida": getattr(p, "vida", 100),
                 "ataque": getattr(p, "ataque", 10),
                 "defesa": getattr(p, "defesa", 5),
                 "mana": getattr(p, "mana", 0),
-                "inventario": list(getattr(p, "inventario", [])),
+                "inventario": inventario_serializado,
             }
+
+            # salva arquetipo para recriar corretamente
+            dados["personagem"]["arquetipo"] = p.__class__.__name__
 
         return dados
 
@@ -187,3 +204,20 @@ def menu_carregar(jogo):
             break
         else:
             print("Opção inválida.")
+
+
+# =====================================================
+# Funções de ajuda
+# =====================================================
+
+
+def ajuda_salvar():
+    print("\nAjuda — Salvar")
+    print("- [1] Salvar rápido: salva em 'quick_save.json'.")
+    print("- [2] Salvar com nome: permite escolher o nome do arquivo.")
+
+
+def ajuda_carregar():
+    print("\nAjuda — Carregar")
+    print("- [1] Carregar último da sessão.")
+    print("- [2] Carregar por nome de arquivo.")

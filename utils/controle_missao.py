@@ -1,5 +1,7 @@
+from models.inventario import Inventario, Item
+
 # =====================================================
-# ========== MISSÕES===================================
+# ========== MENU DE MISSÃO ==========================
 # =====================================================
 
 
@@ -15,7 +17,7 @@ def menu_missao(jogo) -> None:
         print("[1] Escolher dificuldade")
         print("[2] Escolher cenário")
         print("[3] Pré-visualizar missão")
-        print("[4] Iniciar missão (placeholder)")
+        print("[4] Iniciar missão")
         print("[9] Ajuda")
         print("[0] Voltar")
         op = input("> ").strip()
@@ -27,7 +29,7 @@ def menu_missao(jogo) -> None:
         elif op == "3":
             preview_missao(jogo)
         elif op == "4":
-            iniciar_missao_placeholder(jogo)
+            iniciar_missao(jogo)
         elif op == "9":
             ajuda_missao()
         elif op == "0":
@@ -47,7 +49,6 @@ def escolher_dificuldade(jogo) -> None:
     print("[2] Média")
     print("[3] Difícil")
     op = input("> ").strip()
-
     mapa = {"1": "Fácil", "2": "Média", "3": "Difícil"}
     dif = mapa.get(op)
 
@@ -95,73 +96,116 @@ def preview_missao(jogo) -> None:
 
 
 # -----------------------------------------------------
-#             PARTE 3 — COMBATE PLACEHOLDER
+#             PARTE 3 — COMBATE DINÂMICO
 # -----------------------------------------------------
 
 
-def iniciar_missao_placeholder(jogo) -> None:
+def iniciar_missao(jogo):
     if not jogo.personagem["nome"]:
         print("Crie um personagem antes de iniciar uma missão.")
         return
 
+    # Inicializa inventário se não existir
+    if (
+        not hasattr(jogo.personagem_obj, "inventario")
+        or jogo.personagem_obj.inventario is None
+    ):
+        jogo.personagem_obj.inventario = Inventario()
+        # Itens iniciais
+        jogo.personagem_obj.inventario.adicionar_item(Item("Poção de Cura", 30))
+        jogo.personagem_obj.inventario.adicionar_item(Item("Poção de Cura", 30))
+
+    jogador = jogo.personagem_obj
+
+    inimigo = type(
+        "InimigoSimulado", (), {"nome": "Goblin", "vida": 60, "ataque": 8, "defesa": 3}
+    )()
+
+    turno = 1
     print("\nIniciando missão...")
-    jogo.logger.log(
+    jogo.logger.log_batalha(
         f"Missão iniciada — {jogo.missao_config['dificuldade']} / {jogo.missao_config['cenario']}"
     )
 
-    inimigo = type(
-        "InimigoSimulado",
-        (),
-        {"nome": "Goblin", "vida": 60, "ataque": 8, "defesa": 3},
-    )()
-
-    jogador = jogo.personagem_obj
-    turno = 1
-
     while jogador.vida > 0 and inimigo.vida > 0:
         print(f"\n--- Turno {turno} ---")
-        jogo.logger.log_batalha(f"--- Turno {turno} ---")
+        print(f"{jogador.nome} HP: {jogador.vida} | {inimigo.nome} HP: {inimigo.vida}")
 
-        # Ataque do jogador
-        dano_jogador = max(jogador.ataque - inimigo.defesa, 0)
-        inimigo.vida -= dano_jogador
+        print("\nAção:")
+        print("[1] Atacar")
+        print("[2] Usar item")
+        print("[3] Fugir")
+        acao = input("> ").strip()
 
-        evento_jogador = (
-            f"{jogador.nome} causou {dano_jogador} de dano em {inimigo.nome}."
-        )
-        print(evento_jogador)
-        jogo.logger.log_batalha(evento_jogador)
+        if acao == "1":
+            dano = max(jogador.ataque - inimigo.defesa, 0)
+            inimigo.vida -= dano
+            print(f"Você causou {dano} de dano!")
+            jogo.logger.log_batalha(f"{jogador.nome} causou {dano} em {inimigo.nome}.")
 
-        if inimigo.vida <= 0:
-            jogo.logger.log_batalha(f"{inimigo.nome} foi derrotado!")
-            print(f"{inimigo.nome} foi derrotado!")
-            break
+        elif acao == "2":
+            usar_item_em_combate(jogador, jogo)
+            turno += 1
+            continue  # inimigo não perde turno
 
-        # Ataque do inimigo
-        dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
-        jogador.vida -= dano_inimigo
+        elif acao == "3":
+            print("Você fugiu!")
+            jogo.logger.log_batalha("Jogador fugiu da missão.")
+            return
 
-        evento_inimigo = (
-            f"{inimigo.nome} causou {dano_inimigo} de dano em {jogador.nome}."
-        )
-        print(evento_inimigo)
-        jogo.logger.log_batalha(evento_inimigo)
+        else:
+            print("Ação inválida!")
+            continue
 
-        print(
-            f"🧙 {jogador.nome} HP: {jogador.vida} | ⚔️ {inimigo.nome} HP: {inimigo.vida}"
-        )
-        jogo.logger.log_batalha(
-            f"HP — {jogador.nome}: {jogador.vida} | {inimigo.nome}: {inimigo.vida}"
-        )
+        # Ataque inimigo
+        if inimigo.vida > 0:
+            dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
+            jogador.vida -= dano_inimigo
+            print(f"{inimigo.nome} te atacou e causou {dano_inimigo}!")
+            jogo.logger.log_batalha(
+                f"{inimigo.nome} causou {dano_inimigo} em {jogador.nome}."
+            )
 
         turno += 1
 
-    # Resultado final
     resultado = "Vitória" if jogador.vida > 0 else "Derrota"
+    print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
     jogo.logger.log_batalha(f"Resultado: {resultado}")
 
-    print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
-    print("\nRetornando ao menu...")
+
+# -----------------------------------------------------
+#             USO DE ITENS DURANTE COMBATE
+# -----------------------------------------------------
+
+
+def usar_item_em_combate(jogador, jogo):
+    inventario = jogador.inventario
+
+    if not inventario.itens:
+        print("Seu inventário está vazio!")
+        return
+
+    print("\n=== Inventário ===")
+    for i, item in enumerate(inventario.itens, 1):
+        print(f"[{i}] {item.nome} (cura {item.valor} HP)")
+    print("[0] Cancelar")
+
+    op = input("> ").strip()
+    if op == "0":
+        print("Você desistiu de usar um item.")
+        return
+
+    try:
+        idx = int(op) - 1
+        item = inventario.itens[idx]
+    except:
+        print("Item inválido!")
+        return
+
+    jogador.vida += item.valor
+    print(f"Você usou {item.nome} e recuperou {item.valor} HP!")
+    jogo.logger.log_batalha(f"{jogador.nome} usou {item.nome} (+{item.valor} HP).")
+    inventario.remover_item(item)
 
 
 # -----------------------------------------------------
@@ -172,5 +216,5 @@ def iniciar_missao_placeholder(jogo) -> None:
 def ajuda_missao() -> None:
     print("\nAjuda — Missão")
     print("- Selecione dificuldade e cenário.")
-    print("- A opção 'Iniciar missão' executará apenas um placeholder.")
-    print("- Futuras versões podem usar essas escolhas para montar encontros.")
+    print("- Durante a missão, use [1] Atacar, [2] Usar item, [3] Fugir.")
+    print("- Poções curam HP fixo.")

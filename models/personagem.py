@@ -29,7 +29,7 @@ class Personagem(Entidade):
 
 
 
-        class Aventureiro:
+class Aventureiro:
     def init(self, nome, vida, ataque, defesa, mana=0):
         self.nome = nome
         self.vida = vida

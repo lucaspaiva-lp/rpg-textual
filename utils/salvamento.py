@@ -41,7 +41,6 @@ def salvar_rapido(jogo) -> None:
     caminho = os.path.join("saves", "quick_save.json")
     salvar_dados(jogo, caminho)
     jogo._ultimo_save = caminho
-    print(f"✔ Progresso salvo em: {caminho}")
 
 
 # -----------------------------------------------------
@@ -54,41 +53,61 @@ def salvar_nomeado(jogo) -> None:
     caminho = os.path.join("saves", f"{nome}.json")
     salvar_dados(jogo, caminho)
     jogo._ultimo_save = caminho
-    print(f"✔ Progresso salvo em: {caminho}")
 
 
-# -----------------------------------------------------
-#                   SALVAR DADOS
-# -----------------------------------------------------
+# =====================================================
+#                 FUNÇÃO PRINCIPAL
+# =====================================================
 
 
-def salvar_dados(jogo, caminho: str) -> None:
+def salvar_dados(jogo, caminho):
+    """Monta os dados e grava o JSON."""
     try:
-        dados = {
-            "personagem": jogo.personagem,
-            "missao_config": jogo.missao_config,
-        }
+        dados = montar_dados_para_salvar(jogo)
 
-        if hasattr(jogo, "personagem_obj"):
-            p = jogo.personagem_obj
-            dados["personagem_detalhes"] = {
-                "vida": p.vida,
-                "ataque": p.ataque,
-                "defesa": p.defesa,
-                "mana": p.mana,
-                "inventario": p.get_inventario(),
-            }
+        with open(caminho, "w", encoding="utf-8") as arq:
+            json.dump(dados, arq, indent=4, ensure_ascii=False)
 
-        with open(caminho, "w", encoding="utf-8") as f:
-            json.dump(dados, f, indent=4, ensure_ascii=False)
+        print(f"✔ Progresso salvo em: {caminho}")
 
     except Exception as e:
         print(f"❌ Erro ao salvar: {e}")
 
 
-# -----------------------------------------------------
+# =====================================================
+#        MONTA OS DADOS SEGUROS PARA O JSON
+# =====================================================
+
+
+def montar_dados_para_salvar(jogo):
+    """Garante que NÃO chamamos métodos inexistentes e sempre temos inventário."""
+
+    dados = {
+        "personagem": jogo.personagem,
+        "missao_config": jogo.missao_config,
+    }
+
+    if hasattr(jogo, "personagem_obj") and jogo.personagem_obj:
+        p = jogo.personagem_obj
+
+        inventario = getattr(p, "inventario", [])
+        if inventario is None:
+            inventario = []
+
+        dados["personagem_detalhes"] = {
+            "vida": getattr(p, "vida", 100),
+            "ataque": getattr(p, "ataque", 10),
+            "defesa": getattr(p, "defesa", 5),
+            "mana": getattr(p, "mana", 0),
+            "inventario": list(inventario),
+        }
+
+    return dados
+
+
+# =====================================================
 #                        AJUDA
-# -----------------------------------------------------
+# =====================================================
 
 
 def ajuda_salvar() -> None:
@@ -157,9 +176,9 @@ def carregar_nomeado(jogo) -> None:
     carregar_dados(jogo, caminho)
 
 
-# -----------------------------------------------------
-#                CARREGAR DADOS
-# -----------------------------------------------------
+# =====================================================
+#                   CARREGAMENTO
+# =====================================================
 
 
 def carregar_dados(jogo, caminho: str) -> None:
@@ -182,7 +201,6 @@ def carregar_dados(jogo, caminho: str) -> None:
             elif arqu == "Mago":
                 jogo.personagem_obj = Mago(nome)
             else:
-                # fallback
                 jogo.personagem_obj = Guerreiro(nome or "SemNome")
 
             # Restaurar atributos
@@ -194,16 +212,15 @@ def carregar_dados(jogo, caminho: str) -> None:
             p.inventario = det.get("inventario", [])
 
         jogo._ultimo_load = caminho
-
         print(f"✔ Jogo carregado de: {caminho}")
 
     except Exception as e:
         print(f"❌ Erro ao carregar: {e}")
 
 
-# -----------------------------------------------------
+# =====================================================
 #                        AJUDA
-# -----------------------------------------------------
+# =====================================================
 
 
 def ajuda_carregar() -> None:

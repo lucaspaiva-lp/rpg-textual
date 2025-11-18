@@ -3,7 +3,7 @@ saves/**
 
 # ignorar pycache do Python
 __pycache__/
-
+/models/__pycache__
 
 # ignorar configs locais do VSCode
 .vscode/

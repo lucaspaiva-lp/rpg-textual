@@ -1,68 +1,549 @@
-from __future__ import annotations
+# =====================================================
+# ========== IMPORTAÇÕES PRINCIPAIS ===================
+# =====================================================
+# Define compatibilidade futura e importa classes e libs
+# usadas na persistência (salvar/carregar progresso).
 
-# Importa os módulos controladores (cada um responsável por sua área)
-from utils import controle_personagem
-from utils import controle_missao
-from utils import salvamento
+from __future__ import annotations
+import os
+import json
+from models.aventura_classes import Guerreiro, Mago
 
 
 class Jogo:
-    """
-    Núcleo do jogo. Armazena o estado global e delega todas as ações
-    para os módulos especializados dentro de /utils.
+    """Controla o núcleo do RPG textual e o fluxo principal do jogo.
 
-    Este arquivo NÃO contém lógicas específicas do jogo;
-    apenas mantém o estado e direciona chamadas.
+    Gerencia menus, criação de personagens, configuração de missões e
+    operações de salvamento e carregamento. Atua como ponto de entrada
+    para integração com outras camadas do sistema (models e utils).
     """
 
     def __init__(self) -> None:
-        # Estado do personagem
-        self.personagem = {"nome": None, "arquetipo": None}
-        self.personagem_obj = None
-
-        # Estado da missão
-        self.missao_config = {"dificuldade": "Fácil", "cenario": "Trilha"}
-
-        # Controles de persistência
+        """
+        Inicializa o estado base do jogo em memória.
+        Nenhum dado é persistido neste estágio.
+        """
+        self.personagem = {
+            "nome": None,
+            "arquetipo": None,  # ex.: "Guerreiro", "Mago"
+        }
+        self.missao_config = {
+            "dificuldade": "Fácil",
+            "cenario": "Trilha",
+        }
         self._ultimo_save = None
         self._ultimo_load = None
 
-    # ------------------------------------------------------------------
-    #                        ROTAS / DELEGADORES
-    # ------------------------------------------------------------------
+
+ # menu personagem
+    def menu_personagem(self):
+        """
+        Menu dedicado às operações relacionadas ao personagem:
+        criar, ver, inventário, criação de itens.
+        """
+        while True:
+            print("\n=== Menu de Personagem ===")
+            print("[1] Criar personagem")
+            print("[2] Ver personagem")
+            print("[3] Checar inventário")
+            print("[4] Criar item")
+            print("[0] Voltar ao menu principal")
+
+            op = input("> ").strip()
+
+            if op == "1":
+                self.criar_personagem()
+
+            elif op == "2":
+                self.ver_personagem()
+
+            elif op == "3":
+                self.checar_inventario()
+
+            elif op == "0":
+                break
+
+            else:
+                print("Opção inválida. Tente novamente.")
+
+    # =====================================================
+    # ========== CRIAÇÃO DE PERSONAGEM - PROTOTICO ========
+    # =====================================================
 
     def criar_personagem(self) -> None:
-        """Delegação direta para controle_personagem."""
-        try:
-            controle_personagem.criar_personagem(self)
-        except Exception as e:
-            print(f"[ERRO] criar_personagem: {e}")
+        """
+        Fluxo interativo de criação de personagem jogável.
+
+        Responsável por instanciar e armazenar um objeto de personagem (Guerreiro ou Mago)
+        com base na entrada do usuário. Garante consistência entre `personagem_obj`
+        e o dicionário de metadados `self.personagem`.
+
+        Rules:
+                - O nome é obrigatório.
+                - A classe é escolhida entre as opções implementadas (1 ou 2).
+                - Nenhum dado é persistido neste estágio.
+
+        Side effects:
+                - Cria `self.personagem_obj`
+                - Atualiza `self.personagem["nome"]` e `self.personagem["arquetipo"]`
+        """
+        print("=== Criação de Personagem ===")
+        nome = input("Digite o nome do seu personagem: ").strip()
+
+        print("\nEscolha uma classe:")
+        print("[1] Guerreiro - Alta vida e defesa, ataque físico forte.")
+        print("[2] Mago - Usa mana e ataques mágicos poderosos.")
+
+        while True:
+            escolha = input("> ").strip()
+            if escolha == "1":
+                personagem = Guerreiro(nome)
+                break
+            elif escolha == "2":
+                personagem = Mago(nome)
+                break
+            else:
+                print("Opção inválida. Escolha 1 ou 2.")
+
+        print("\nPersonagem criado com sucesso!")
+        print(f"Nome: {personagem.nome}")
+        print(f"Classe: {'Guerreiro' if isinstance(personagem, Guerreiro) else 'Mago'}")
+        print(f"Vida: {personagem.vida}")
+        print(f"Ataque: {personagem.ataque}")
+        print(f"Defesa: {personagem.defesa}")
+        print(f"Mana: {personagem.mana}")
+
+        self.personagem_obj = personagem
+        self.personagem["nome"] = nome
+        self.personagem["arquetipo"] = (
+            "Guerreiro" if isinstance(personagem, Guerreiro) else "Mago"
+        )
+
+
+    # =====================================================
+    # VER PERSONAGEM
+    # =====================================================
+    def ver_personagem(self):
+        if not self.personagem_obj:
+            print("Nenhum personagem criado ainda.")
+            return
+
+        p = self.personagem_obj
+        print("\n=== Personagem Atual ===")
+        print(f"Nome: {p.nome}")
+        print(f"Vida: {p.vida}")
+        print(f"Ataque: {p.ataque}")
+        print(f"Defesa: {p.defesa}")
+        if hasattr(p, "mana"):
+            print(f"Mana: {p.mana}")
+
+    # =====================================================
+    # CHECAR INVENTÁRIO
+    # =====================================================
+    def checar_inventario(self):
+        if not self.personagem_obj:
+            print("Nenhum personagem criado.")
+            return
+
+        inventario = self.personagem_obj.inventario
+
+        print("\n=== Inventário ===")
+        if not inventario:
+            print("(vazio)")
+        else:
+            for i, item in enumerate(inventario, 1):
+                print(f"{i}. {item}")
+
+
+    # =====================================================
+    # ========== MENU PRINCIPAL ===========================
+    # =====================================================
+
+    def menu_principal(self) -> None:
+        """
+        Loop principal de execução do jogo.
+
+        Exibe o menu principal e redireciona o fluxo para os submenus:
+        criação de personagem, missões, salvar/carregar e saída.
+
+        Este método bloqueia a execução até que o usuário escolha sair.
+        """
+        while True:
+            print("\n=== MENU PRINCIPAL ===")
+            print("[1] Criar novo personagem")
+            print("[2] Ver informações do personagem")
+            print("[3] Missão")
+            print("[4] Salvar Jogo (simulado)")
+            print("[5] Carregar Jogo (simulado)")
+            print("[0] Sair")
+
+            opcao = input("> ").strip()
+
+            if opcao == "1":
+                self.criar_personagem()
+            elif opcao == "2":
+                self.ver_personagem()
+            elif opcao == "3":
+                self.menu_missao()
+            elif opcao == "4":
+                self.menu_salvar()
+            elif opcao == "5":
+                self.menu_carregar()
+            elif opcao == "0":
+                print("Saindo do jogo...")
+                break
+            else:
+                print("Opção inválida. Tente novamente.")
 
     def ver_personagem(self) -> None:
-        """Tenta delegar para o módulo. Caso não exista, avisa."""
-        try:
-            if hasattr(controle_personagem, "ver_personagem"):
-                return controle_personagem.ver_personagem(self)
-            print(
-                "[AVISO] Função ver_personagem() não encontrada em controle_personagem."
-            )
-        except Exception as e:
-            print(f"[ERRO] ver_personagem: {e}")
+        """
+        Exibe os atributos atuais do personagem em memória.
+
+        Se nenhum personagem tiver sido criado, notifica o usuário.
+        """
+        if hasattr(self, "personagem_obj"):
+            p = self.personagem_obj
+            print("\n=== Dados do Personagem ===")
+            print(f"Nome: {p.nome}")
+            print(f"Classe: {self.personagem['arquetipo']}")
+            print(f"Vida: {p.vida}")
+            print(f"Ataque: {p.ataque}")
+            print(f"Defesa: {p.defesa}")
+            print(f"Mana: {p.mana}")
+            print(f"Inventário: {p.get_inventario()}")
+        else:
+            print("Nenhum personagem criado ainda.")
+
+    # =====================================================
+    # ========== MISSÕES - PROTOTICO DE TESTE =============
+    # =====================================================
 
     def menu_missao(self) -> None:
-        try:
-            controle_missao.menu_missao(self)
-        except Exception as e:
-            print(f"[ERRO] menu_missao: {e}")
+        """
+        Submenu de missões.
+
+        Permite ao jogador configurar e visualizar detalhes da missão antes da execução.
+        Os valores são armazenados em `self.missao_config`.
+        """
+        while True:
+            print("\n=== Missão ===")
+            print(f"Dificuldade atual: {self.missao_config['dificuldade']}")
+            print(f"Cenário atual:     {self.missao_config['cenario']}")
+            print("[1] Escolher dificuldade")
+            print("[2] Escolher cenário")
+            print("[3] Pré-visualizar missão")
+            print("[4] Iniciar missão (placeholder)")
+            print("[9] Ajuda")
+            print("[0] Voltar")
+            op = input("> ").strip()
+
+            if op == "1":
+                self._escolher_dificuldade()
+            elif op == "2":
+                self._escolher_cenario()
+            elif op == "3":
+                self._preview_missao()
+            elif op == "4":
+                self._iniciar_missao_placeholder()
+            elif op == "9":
+                self._ajuda_missao()
+            elif op == "0":
+                break
+            else:
+                print("Opção inválida.")
+
+    def _escolher_dificuldade(self) -> None:
+        """
+        Atualiza o nível de dificuldade da missão.
+
+        Mantém consistência com os valores permitidos:
+        "Fácil", "Média" ou "Difícil".
+        """
+        print("\nDificuldades:")
+        print("[1] Fácil")
+        print("[2] Média")
+        print("[3] Difícil")
+        op = input("> ").strip()
+        mapa = {"1": "Fácil", "2": "Média", "3": "Difícil"}
+        dif = mapa.get(op)
+        if dif:
+            self.missao_config["dificuldade"] = dif
+            print(f"Dificuldade definida: {dif}")
+        else:
+            print("Opção inválida.")
+
+    def _escolher_cenario(self) -> None:
+        """
+        Define o cenário visual/temático da missão.
+
+        Este método apenas altera o valor textual em `self.missao_config["cenario"]`.
+        """
+        print("\nCenários:")
+        print("[1] Trilha")
+        print("[2] Floresta")
+        print("[3] Caverna")
+        print("[4] Ruínas")
+        op = input("> ").strip()
+        mapa = {"1": "Trilha", "2": "Floresta", "3": "Caverna", "4": "Ruínas"}
+        cen = mapa.get(op)
+        if cen:
+            self.missao_config["cenario"] = cen
+            print(f"Cenário definido: {cen}")
+        else:
+            print("Opção inválida.")
+
+    def _preview_missao(self) -> None:
+        """
+        Exibe uma prévia textual dos parâmetros atuais da missão.
+
+        Placeholder — a lógica de geração de inimigos e recompensas
+        será implementada em versões futuras.
+        """
+        print("\nPré-visualização da Missão")
+        print(f"- Dificuldade: {self.missao_config['dificuldade']}")
+        print(f"- Cenário:     {self.missao_config['cenario']}")
+        print("- Inimigos e recompensas: (em breve)")
+        print("- Regras de combate: (em breve)")
+
+    def _iniciar_missao_placeholder(self) -> None:
+        """
+        Executa um placeholder de missão com combate simulado.
+
+        Este método não depende da classe Missao neste estágio.
+        Implementa um loop de combate simples entre o personagem
+        e um inimigo fictício, exibindo o resultado ao final.
+        """
+        if not self.personagem["nome"]:
+            print("Crie um personagem antes de iniciar uma missão.")
+            return
+
+        print("\nIniciando missão...")
+        print(
+            f"Configuração atual: {self.missao_config['dificuldade']} - {self.missao_config['cenario']}"
+        )
+
+        # Cria inimigo simulado (não depende de Missao)
+        inimigo = type(
+            "InimigoSimulado",
+            (),
+            {"nome": "Goblin", "vida": 60, "ataque": 8, "defesa": 3},
+        )()
+
+        jogador = self.personagem_obj
+        turno = 1
+        log_batalha = []
+
+        # Loop de combate simples
+        while jogador.vida > 0 and inimigo.vida > 0:
+            print(f"\n--- Turno {turno} ---")
+
+            # Ataque do jogador
+            dano_jogador = max(jogador.ataque - inimigo.defesa, 0)
+            inimigo.vida -= dano_jogador
+            log_batalha.append(
+                f"{jogador.nome} causou {dano_jogador} de dano em {inimigo.nome}."
+            )
+
+            if inimigo.vida <= 0:
+                print(f"{inimigo.nome} foi derrotado!")
+                break
+
+            # Ataque do inimigo
+            dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
+            jogador.vida -= dano_inimigo
+            log_batalha.append(
+                f"{inimigo.nome} causou {dano_inimigo} de dano em {jogador.nome}."
+            )
+
+            print(
+                f"🧙 {jogador.nome} HP: {jogador.vida} | ⚔️ {inimigo.nome} HP: {inimigo.vida}"
+            )
+            turno += 1
+
+        # Exibição do resultado e log
+        resultado = "✅ Vitória!" if jogador.vida > 0 else "💀 Derrota..."
+        print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
+
+        print("\n=== Log de Batalha ===")
+        for evento in log_batalha:
+            print(evento)
+
+        print("\nRetornando ao menu de Missão...")
+
+    def _ajuda_missao(self) -> None:
+        """Exibe orientações sobre o uso do submenu de missões."""
+        print("\nAjuda — Missão")
+        print("- Selecione dificuldade e cenário.")
+        print("- A opção 'Iniciar missão' executará apenas um placeholder.")
+        print(
+            "- Uma futura implementação pode usar essas escolhas para montar encontros."
+        )
+
+    # =====================================================
+    # ========== SALVAR E CARREGAR (PERSISTENTE) ==========
+    # =====================================================
 
     def menu_salvar(self) -> None:
+        """Submenu de salvamento do jogo."""
+        os.makedirs("saves", exist_ok=True)
+
+        while True:
+            print("\n=== Salvar ===")
+            print("[1] Salvar rápido")
+            print("[2] Salvar com nome")
+            print("[9] Ajuda")
+            print("[0] Voltar")
+            op = input("> ").strip()
+
+            if op == "1":
+                self._salvar_rapido()
+            elif op == "2":
+                self._salvar_nomeado()
+            elif op == "9":
+                self._ajuda_salvar()
+            elif op == "0":
+                break
+            else:
+                print("Opção inválida.")
+
+    def _salvar_rapido(self) -> None:
+        """Realiza um salvamento automático padrão."""
+        caminho = os.path.join("saves", "quick_save.json")
+        self._salvar_dados(caminho)
+        self._ultimo_save = caminho
+        print(f"✔ Progresso salvo em: {caminho}")
+
+    def _salvar_nomeado(self) -> None:
+        """Permite escolher o nome do arquivo de salvamento."""
+        nome = input("Nome do arquivo (sem extensão): ").strip() or "meu_jogo"
+        caminho = os.path.join("saves", f"{nome}.json")
+        self._salvar_dados(caminho)
+        self._ultimo_save = caminho
+        print(f"✔ Progresso salvo em: {caminho}")
+
+    def _salvar_dados(self, caminho: str) -> None:
+        """Serializa os dados do jogo e grava em disco no formato JSON."""
         try:
-            salvamento.menu_salvar(self)
+            dados = {
+                "personagem": self.personagem,
+                "missao_config": self.missao_config,
+            }
+            if hasattr(self, "personagem_obj"):
+                p = self.personagem_obj
+                dados["personagem_detalhes"] = {
+                    "vida": p.vida,
+                    "ataque": p.ataque,
+                    "defesa": p.defesa,
+                    "mana": p.mana,
+                    "inventario": p.get_inventario(),
+                }
+
+            with open(caminho, "w", encoding="utf-8") as f:
+                json.dump(dados, f, indent=4, ensure_ascii=False)
         except Exception as e:
-            print(f"[ERRO] menu_salvar: {e}")
+            print(f"❌ Erro ao salvar: {e}")
+
+    def _ajuda_salvar(self) -> None:
+        """Exibe instruções sobre o menu de salvamento."""
+        print("\nAjuda — Salvar")
+        print("- Agora o jogo salva dados reais em formato JSON.")
+        print("- Os arquivos ficam armazenados na pasta `saves/`.")
+        print("- Use nomes curtos e sem espaços para evitar erros.")
+
+    # =====================================================
+    # ========== CARREGAR ================================
+    # =====================================================
 
     def menu_carregar(self) -> None:
+        """Submenu para carregamento real de progresso."""
+        os.makedirs("saves", exist_ok=True)
+
+        while True:
+            print("\n=== Carregar ===")
+            print("[1] Carregar último save")
+            print("[2] Carregar por nome")
+            print("[9] Ajuda")
+            print("[0] Voltar")
+            op = input("> ").strip()
+
+            if op == "1":
+                self._carregar_ultimo()
+            elif op == "2":
+                self._carregar_nomeado()
+            elif op == "9":
+                self._ajuda_carregar()
+            elif op == "0":
+                break
+            else:
+                print("Opção inválida.")
+
+    def _carregar_ultimo(self) -> None:
+        """Restaura o último save conhecido na sessão."""
+        if not self._ultimo_save:
+            print("Nenhum save encontrado nesta sessão.")
+            return
+        self._carregar_dados(self._ultimo_save)
+
+    def _carregar_nomeado(self) -> None:
+        """Permite carregar manualmente um arquivo de save."""
+        nome = input("Nome do arquivo (sem extensão): ").strip()
+        caminho = os.path.join("saves", f"{nome}.json")
+
+        if not os.path.exists(caminho):
+            print("Arquivo não encontrado.")
+            return
+
+        self._carregar_dados(caminho)
+
+    def _carregar_dados(self, caminho: str) -> None:
+        """Lê o arquivo JSON e restaura os dados do jogo na memória."""
         try:
-            salvamento.menu_carregar(self)
+            with open(caminho, "r", encoding="utf-8") as f:
+                dados = json.load(f)
+
+            self.personagem = dados.get("personagem", {})
+            self.missao_config = dados.get("missao_config", {})
+
+            if "personagem_detalhes" in dados:
+                det = dados["personagem_detalhes"]
+                arqu = self.personagem.get("arquetipo")
+                nome = self.personagem.get("nome")
+
+                if arqu == "Guerreiro":
+                    self.personagem_obj = Guerreiro(nome)
+                elif arqu == "Mago":
+                    self.personagem_obj = Mago(nome)
+
+                if hasattr(self, "personagem_obj"):
+                    p = self.personagem_obj
+                    p.vida = det.get("vida", p.vida)
+                    p.ataque = det.get("ataque", p.ataque)
+                    p.defesa = det.get("defesa", p.defesa)
+                    p.mana = det.get("mana", p.mana)
+                    p.inventario = det.get("inventario", [])
+
+            self._ultimo_load = caminho
+            print(f"✔ Jogo carregado com sucesso de: {caminho}")
         except Exception as e:
-            print(f"[ERRO] menu_carregar: {e}")
+            print(f"❌ Erro ao carregar: {e}")
+
+    def _ajuda_carregar(self) -> None:
+        """Exibe orientações sobre o sistema de carregamento."""
+        print("\nAjuda — Carregar")
+        print("- Carrega arquivos JSON localizados na pasta `saves/`.")
+        print("- Use o mesmo nome usado ao salvar (sem `.json`).")
+        print("- Apenas arquivos válidos e bem formatados serão aceitos.")
+
+
+# =====================================================
+# ========== ENTRY POINT ==============================
+# =====================================================
+
+if __name__ == "__main__":
+    """
+    Entry point da aplicação.
+
+    Instancia o núcleo do jogo e inicia o menu principal.
+    """
+    jogo = Jogo()
+    jogo.menu_principal()

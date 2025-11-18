@@ -158,8 +158,9 @@ def iniciar_missao(jogo):
             continue
 
         # Ataque inimigo
+        # Ataque inimigo — garante pelo menos 1 de dano
         if inimigo.vida > 0:
-            dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
+            dano_inimigo = max(inimigo.ataque - jogador.defesa, 1)
             jogador.vida -= dano_inimigo
             print(f"{inimigo.nome} te atacou e causou {dano_inimigo}!")
             jogo.logger.log_batalha(

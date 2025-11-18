@@ -46,7 +46,6 @@ class Jogo:
             print("[1] Criar personagem")
             print("[2] Ver personagem")
             print("[3] Checar inventário")
-            print("[4] Criar item")
             print("[0] Voltar ao menu principal")
 
             op = input("> ").strip()

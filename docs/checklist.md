@@ -9,45 +9,54 @@
 ## **SEMANA 2 — Regras, Coleções e Funções**
 
 - [x] Uso de listas e dicionários (Invetário ainda não está totalmente integrado)
-- [x] Módulo random (Existe pacialmente nas missões)
-- [ ] Inventário funcional;
-- [ ] Sistema de cura/mana;
+- [ ] Módulo random (Existe pacialmente nas missões, isso é sorteio de inimigos, itens e missões)
+  - [ ] Combate completo com turnos detalhados
+        Está **incompleto / sem detalhamento. Falta: Turnos (Detalha mais quem está recebendo o dando e quem está recebendo), implementa a recompensa, randomizar melhor o combate e itens recebidos.**
+- [ ] Inventário funcional (Escolhe itens do invetário);
+  - [ ] Sistema de cura/mana (através do inventário com itens de cura);
 - [x] Validações no menu;
-- [ ] Combate completo com turnos detalhados
-      Está **quebrado / incompleto / sem detalhamento.**
+
+##### **Entregável:**
+
+Versão aprimorada com múltiplos inimigos, missões e inventário funcional, incluindo
+logs de turnos de batalha.
 
 ## **SEMANA 3 — Polimorfismo, Herança e Persistência**
 
 - [x] Subclasses (Guerreiro e Mago);
 - [x] Arqueiro / Chefão / Outros (Existe **parcialmente**)
-- [ ] Métodos sobrescritos avançados (Guerreiro e Mago possuem habilidades diferentes, mas ainda muito simples).
+- [ ] Métodos sobrescritos avançados (Guerreiro e Mago possuem habilidades diferentes, mas ainda muito simples) (**Junto do Modulo de Random, vocês diversificam os ataques**).
 - [x] Persistência JSON (100% Funcional, salvar e carregar).
 - [ ] Logger (ainda não existe; ou está funcional).
 - [x] Polimorfismo básico (Parte do Guerreiro e mago, ataque).
 
----
+##### **Entregável:**
 
-## **O que falta do combate?**
+Versão final do jogo com hierarquia OO, logs e persistência de dados.
+
+## TIMES
+
+### **O que falta do combate?**
 
 **Requisito obrigatório.**
 
 - [x] Existe combate básico.
-- [ ] NÃO exibe turnos.
-- [ ] NÃO exibe HP restante por turno.
-- [ ] NÃO mostra dano aplicado.
-- [ ] NÃO imprime resultado completo.
-- [ ] NÃO dá loot completo.
+- [ ] Exibe turnos.
+- [ ] Exibe HP restante por turno.
+- [ ] Mostra dano aplicado.
+- [ ] Imprime resultado completo.
+- [ ] Dá loot completo.
 
 ---
 
-## **O que falta Menu?**
+### **O que falta Menu?**
 
 - [ ] Repositorio (**Não estamos usando "Repositorio"** , e sim apenas salvamento.py procedural.)
 - [ ] Logger. (**Não existe ainda.)**
 
 ---
 
-## O que falta Personagem e Missão?
+### O que falta Personagem e Missão?
 
 - [x] Criar personagem.
 - [x] Escolher classe (Guerreiro e Mago).

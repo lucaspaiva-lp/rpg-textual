@@ -1,55 +1,44 @@
-from __future__ import annotations
-from .base import Entidade, Atributos
-
-
-class Personagem(Entidade):
-    """
-    Classe base única do jogador.
-    Esta versão NÃO implementa a lógica principal de combate.
-    """
-
-    def __init__(self, nome: str, atrib: Atributos):
-        super().__init__(nome, atrib)
-        self.nivel = 1
-        self.xp = 0
-
-    def calcular_dano_base(self) -> int:
-        """
-        Deve retornar um inteiro com o dano base do personagem.
-        (ex.: usar self._atrib.ataque, aplicar aleatoriedade/crítico/etc.)
-        """
-        raise NotImplementedError("Implementar cálculo de dano base do Personagem.")
-
-    def habilidade_especial(self) -> int:
-        """
-        Deve retornar dano especial (ou 0 se indisponível).
-        (ex.: consumir self._atrib.mana e aplicar bônus de dano)
-        """
-        raise NotImplementedError("Implementar habilidade especial do Personagem.")
-
+# ============================================
+# PERSONAGENS DO JOGO (versão estável)
+# ============================================
 
 
 class Aventureiro:
-    def init(self, nome, vida, ataque, defesa, mana=0):
+    """
+    Classe base usada pelo SEU jogo.
+    Todos os personagens jogáveis herdam dela.
+    """
+
+    def __init__(self, nome: str, vida: int, ataque: int, defesa: int, mana: int = 0):
         self.nome = nome
         self.vida = vida
         self.ataque = ataque
         self.defesa = defesa
         self.mana = mana
-        self.inventario = []
-        
+
+        # Inventário é fundamental para evitar o erro no salvamento
+        self.inventario: list = []
+
+    # -------------------------
+    # GETTERS E UTILIDADES
+    # -------------------------
+
     def get_ataque(self) -> int:
         return self.ataque
-    
+
     def get_mana(self) -> int:
         return self.mana
-    
-    def set_mana(self, mana) -> None:
-        self.mana = mana
-    
+
+    def set_mana(self, valor: int) -> None:
+        self.mana = valor
+
     def get_inventario(self) -> list:
         return self.inventario
-    
+
+    # -------------------------
+    # INVENTÁRIO
+    # -------------------------
+
     def adicionar_item(self, item):
         self.inventario.append(item)
 
@@ -57,44 +46,59 @@ class Aventureiro:
         if item in self.inventario:
             self.inventario.remove(item)
 
-    def receber_dano(self, dano) -> bool:
+    # -------------------------
+    # COMBATE
+    # -------------------------
+
+    def receber_dano(self, dano: float) -> bool:
         dano_final = max(0, dano - self.defesa)
         self.vida -= dano_final
-        # Se tiver vida retorn True se não retorna False
-        if self.vida < 0:
+
+        if self.vida <= 0:
             self.vida = 0
             return False
         return True
 
-    def esta_vivo(self):
+    def esta_vivo(self) -> bool:
         return self.vida > 0
 
 
-class Guerreiro(Aventureiro):
-    def init(self, nome):
-        super().init(nome, vida=120, ataque=15, defesa=10)
+# ============================================
+#           CLASSES ESPECÍFICAS
+# ============================================
 
-    def habilidade_especial(self, alvo:Aventureiro):
-        # Golpe poderoso: ignora metade da defesa do alvo
-        dano_base = self.get_ataque()
-        dano_especial = dano_base * 1.5
-        dano_final = max(0, dano_especial - (alvo.defesa/2))
+
+class Guerreiro(Aventureiro):
+    """
+    Personagem focado em força e defesa.
+    Golpe Especial: golpe poderoso com mitigação parcial da defesa do inimigo.
+    """
+
+    def __init__(self, nome: str):
+        super().__init__(nome, vida=120, ataque=15, defesa=10)
+
+    def habilidade_especial(self, alvo: Aventureiro) -> float:
+        dano = self.ataque * 1.5
+        dano_final = max(0, dano - (alvo.defesa * 0.5))
         alvo.receber_dano(dano_final)
         return dano_final
 
-class Mago(Aventureiro):
-    def init(self, nome):
-        super().init(nome, vida=80, ataque=10, defesa=5, mana=100)
 
-    def habilidade_especial(self, alvo:Aventureiro):
-        # Bola de fogo: consome 20 de mana e causa alto dano mágico
-        mana = self.get_mana()
-        ataque = self.get_ataque()
-        if mana >=20:
-            mana -= 20
-            self.set_mana(mana)
-            dano_magico = ataque * 2.5
-            alvo.receber_dano(dano_magico)
-            return dano_magico
-        else:
-            return 0 #sem mana suficiente
+class Mago(Aventureiro):
+    """
+    Personagem focado em mana e dano mágico.
+    Golpe Especial: feitiço de alto dano que custa mana.
+    """
+
+    def __init__(self, nome: str):
+        super().__init__(nome, vida=80, ataque=10, defesa=5, mana=100)
+
+    def habilidade_especial(self, alvo: Aventureiro) -> float:
+        if self.mana < 20:
+            print("⚠ Mana insuficiente para lançar magia especial!")
+            return 0
+
+        self.mana -= 20
+        dano_magico = self.ataque * 2.5
+        alvo.receber_dano(dano_magico)
+        return dano_magico

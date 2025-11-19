@@ -1,6 +1,8 @@
 # =====================================================
-# ========== CRIAÇÃO DE PERSONAGEM - PROTÓTIPO =========
+# ========== CRIAÇÃO DE PERSONAGEM ====================
 # =====================================================
+
+from models.personagem import Guerreiro, Mago
 
 
 def criar_personagem(jogo) -> None:
@@ -61,18 +63,16 @@ def escolher_arquetipo(jogo) -> None:
     print("\nArquétipos disponíveis:")
     print("[1] Guerreiro")
     print("[2] Mago")
-    print("[3] Arqueiro")
-    print("[4] Curandeiro")
-    print("[5] Personalizado")
+    print("[3] Arqueiro (indisponível)")
+    print("[4] Curandeiro (indisponível)")
 
     op = input("> ").strip()
 
     mapa = {
         "1": "Guerreiro",
         "2": "Mago",
-        "3": "Arqueiro",
-        "4": "Curandeiro",
-        "5": "Personalizado",
+        "3": "Arqueiro",  # ainda não implementado
+        "4": "Curandeiro",  # ainda não implementado
     }
 
     arq = mapa.get(op)
@@ -94,29 +94,32 @@ def confirmar_criacao(jogo) -> None:
     arq = jogo.personagem["arquetipo"]
 
     if not nome:
-        print("Defina um nome antes de confirmar a criação.")
+        print("❌ Defina um nome antes de confirmar a criação.")
         return
     if not arq:
-        print("Escolha um arquétipo antes de confirmar a criação.")
+        print("❌ Escolha um arquétipo antes de confirmar a criação.")
         return
 
     print("\nPersonagem criado com sucesso!")
     print(f"Nome: {nome} | Arquétipo: {arq}")
 
-    # Aqui você instancia a classe real do personagem
-    # (Guerreiro, Mago, etc.)
-    # Para já funcionar, deixei assim:
-    from models.personagem import Guerreiro, Mago
-
+    # ================================
+    # Instancia a classe correta
+    # ================================
     if arq == "Guerreiro":
         jogo.personagem_obj = Guerreiro(nome)
     elif arq == "Mago":
         jogo.personagem_obj = Mago(nome)
     else:
-        # Para os que ainda não existem, cria um básico
+        print("⚠ Arquétipo ainda não implementado. Usando Guerreiro como base.")
         jogo.personagem_obj = Guerreiro(nome)
 
-    print("Objeto do personagem criado com sucesso!")
+    print("✔ Objeto do personagem criado!")
+    print(f"Atributos iniciais:")
+    print(f"Vida: {jogo.personagem_obj.vida}")
+    print(f"Ataque: {jogo.personagem_obj.ataque}")
+    print(f"Defesa: {jogo.personagem_obj.defesa}")
+    print(f"Mana: {jogo.personagem_obj.mana}")
 
 
 # -----------------------------------------------------
@@ -126,6 +129,5 @@ def confirmar_criacao(jogo) -> None:
 
 def ajuda_criar_personagem() -> None:
     print("\nAjuda — Criação de Personagem")
-    print("- Defina um nome e um arquétipo.")
-    print("- Apenas Guerreiro e Mago possuem classes próprias.")
-    print("- A confirmação cria o objeto do personagem.")
+    print("- Defina um nome e escolha Guerreiro ou Mago.")
+    print("- Arqueiro e Curandeiro ainda não estão implementados.")

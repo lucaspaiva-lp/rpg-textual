@@ -8,7 +8,7 @@ from __future__ import annotations
 import os
 import json
 from models.aventura_classes import Guerreiro, Mago
-
+from equipamentos import PocaoDeVida
 
 class Jogo:
     """Controla o núcleo do RPG textual e o fluxo principal do jogo.
@@ -47,6 +47,8 @@ class Jogo:
             print("[2] Ver personagem")
             print("[3] Checar inventário")
             print("[4] Criar item")
+            print("[5] Usar item")
+            print("[6] Adicionar item ao inventário")
             print("[0] Voltar ao menu principal")
 
             op = input("> ").strip()
@@ -59,6 +61,13 @@ class Jogo:
 
             elif op == "3":
                 self.checar_inventario()
+
+            elif op == "5":
+                self.usar_item_personagem()
+
+            elif op == "6":
+                item = print("Informe o nome do item a adicionar:")
+                self.personagem.adicionar_item(item)
 
             elif op == "0":
                 break
@@ -154,6 +163,18 @@ class Jogo:
             for i, item in enumerate(inventario, 1):
                 print(f"{i}. {item}")
 
+
+    # =====================================================
+    # USAR ITEM
+    # =====================================================
+    def usar_item_personagem(self):
+        if not self.personagem_obj:
+            print("Nenhum personagem criado.")
+            return
+
+        nome_item = input("Digite o nome do item a ser usado: ").strip()
+        resultado = self.personagem_obj.usar_item(nome_item)
+        print(resultado)
 
     # =====================================================
     # ========== MENU PRINCIPAL ===========================

@@ -66,6 +66,18 @@ class Aventureiro:
 
         self.vida = self.vida_max
         self.mana = self.mana_max
+    
+
+    def usar_item(self, nome_item: str):
+        """Tenta usar um item do inventário."""
+        for item in self.inventario:
+            if item.nome.lower() == nome_item.lower():
+                if hasattr(item, "usar"):
+                    cura = item.usar(self)
+                    self.inventario.remove(item)
+                    return f"Você usou {item.nome} e recuperou {cura} de vida."
+                return "Este item não pode ser usado."
+        return "Item não encontrado no inventário."
 
 
 class Guerreiro(Aventureiro):

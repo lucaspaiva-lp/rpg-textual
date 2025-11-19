@@ -41,7 +41,7 @@ class Aventureiro:
             return False
         return True
 
-    def esta_vivo(self):
+    def esta_vivo(self) -> bool:
         return self.vida > 0
 
     def calcular_dano_basico(self, alvo):

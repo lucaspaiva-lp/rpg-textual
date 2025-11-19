@@ -1,36 +1,42 @@
 from __future__ import annotations
 from models.jogo import Jogo
+from models.controle_logs import menu_logs
 
 
 def menu() -> None:
-    """Exibe o menu principal do jogo e gerencia a navegação entre opções.
+    """Exibe o menu principal do jogo e gerencia a navegação.
 
-    Cria uma instância da classe `Jogo` e permite que o jogador interaja
-    com as principais funcionalidades do sistema, como criação de personagem,
-    seleção de missões e simulação de salvamento/carregamento.
+    Cria uma instância da classe `Jogo` e permite ao jogador acessar:
+    - criação de personagem,
+    - missões,
+    - salvamento,
+    - carregamento.
 
-    Loop contínuo até que o usuário opte por encerrar o programa.
+    Loop contínuo até que o usuário escolha sair.
     """
     jogo = Jogo()
 
     while True:
         print("\n=== RPG OO — Menu Principal ===")
-        print("[1] Menu do personagem")
-        print("[2] Encarar missão")
+        print("[1] Criar personagem")
+        print("[2] Missão")
         print("[3] Salvar")
         print("[4] Carregar")
+        print("[5] Visualizar logs")
         print("[0] Sair")
 
         op = input("> ").strip()
 
         if op == "1":
-            jogo.menu_personagem()
+            jogo.criar_personagem()
         elif op == "2":
             jogo.menu_missao()
         elif op == "3":
             jogo.menu_salvar()
         elif op == "4":
             jogo.menu_carregar()
+        elif op == "5":
+            menu_logs(jogo)
         elif op == "0":
             print("Até logo!")
             break
@@ -41,7 +47,6 @@ def menu() -> None:
 if __name__ == "__main__":
     """Ponto de entrada principal do programa.
 
-    Executa a função `menu()` caso o script seja chamado diretamente,
-    inicializando o fluxo principal do jogo.
+    Executa `menu()` caso o arquivo seja executado diretamente.
     """
     menu()

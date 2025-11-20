@@ -1,112 +1,56 @@
 from __future__ import annotations
-from .base import Entidade
 
 
-class Inimigo(Entidade):
-    def __init__(self, nome, vida, ataque, defesa, efeitos, nome_ataque):
+class Inimigo:
+    def __init__(self, nome, vida, ataque, defesa, nome_ataque):
         self.nome = nome
         self.vida = vida
         self.ataque = ataque
         self.defesa = defesa
-        self.efeitos = {"Sangramento": {"dano": 2, "turnos": 3}}
         self.nome_ataque = nome_ataque
 
-    def calcular_dano_base(self):
-
-        return self.ataque
-
     def receber_dano(self, dano):
-
         dano_final = max(0, dano - self.defesa)
         self.vida -= dano_final
-
         if self.vida < 0:
             self.vida = 0
-
-            return dano_final
+        return dano_final
 
     def esta_vivo(self):
-
         return self.vida > 0
+
+    def calcular_ataque(self):
+        return self.ataque
+
+
+# ===========================================================
+# INIMIGOS ESPECÍFICOS
+# ===========================================================
 
 
 class Goblin(Inimigo):
-
-    def __init__(self, nome, nome_ataque):
-
-        super.__init__(
-            nome="Goblin", vida=100, ataque=7, defesa=7, nome_ataque="Furia Goblin"
+    def __init__(self):
+        super().__init__(
+            nome="Goblin", vida=60, ataque=8, defesa=3, nome_ataque="Fúria Goblin"
         )
-
-    def habilidade_especial(self, alvo):
-
-        if self.defesa == 7:
-
-            self.defesa -= 2
-            self.ataque += 2
-            print(
-                "{self.nome} usou {self.nome_ataque}, ao usar seu poder seu ataque ficou pra {self.ataque} e sua defesa {self.defesa} ."
-            )
-
-        else:
-            print("{self.nome} sentiu medo do oponente e fugiu da batalha.")
-
-            return self.ataque
 
 
 class Ladrao(Inimigo):
-
-    def __init__(self, nome, nome_ataque):
-
-        super.__init__(
-            nome="Ladrão", vida=100, ataque=11, defesa=3, nome_ataque="Disparo de adaga"
+    def __init__(self):
+        super().__init__(
+            nome="Ladrão", vida=80, ataque=11, defesa=2, nome_ataque="Disparo de Adaga"
         )
 
-    def habilidade_especial(self, alvo):
 
-        if self.ataque == 11:
-
-            print("{self.nome} usou {self.nome_ataque} . ")
-            return self.ataque * 2
-
-        else:
-            print("{self.nome} Fugiu da batalha!")
-
-
-class Golen(Inimigo):
-
-    def __init__(self, nome, nome_ataque):
-        super.__init__(
-            nome="Golen", vida=100, ataque=20, defesa=15, nome_ataque="Soco de pedra"
+class Golem(Inimigo):
+    def __init__(self):
+        super().__init__(
+            nome="Golem", vida=120, ataque=16, defesa=10, nome_ataque="Soco de Pedra"
         )
-
-    def habilidade_especial(self, alvo):
-
-        if self.ataque == 20:
-            print("{self.nome} usou {self.nome_ataque} .")
-
-            return self.ataque
-
-        else:
-
-            print("{self.nome} fugiu da batalha")
 
 
 class Demonio(Inimigo):
-    def __init__(self, nome, nome_ataque):
-
-        super.__init__(
-            nome="Trigon",
-            vida=100,
-            ataque=50,
-            defesa=50,
-            nome_ataque="Passeio no inferno",
+    def __init__(self):
+        super().__init__(
+            nome="Demônio", vida=150, ataque=22, defesa=12, nome_ataque="Chama Profunda"
         )
-
-    def habilidade_especial(self, alvo):
-
-        if self.ataque == 50:
-            print("{self.nome} usou {self.nome_ataque} .")
-
-            return self.ataque    
-        

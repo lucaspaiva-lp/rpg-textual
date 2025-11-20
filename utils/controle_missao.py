@@ -1,4 +1,6 @@
 from models.inventario import Inventario, Item
+from models.inimigo import Goblin, Ladrao, Golem, Demonio
+import random
 
 # =====================================================
 # ========== MENU DE MISSÃO ==========================
@@ -6,10 +8,7 @@ from models.inventario import Inventario, Item
 
 
 def menu_missao(jogo) -> None:
-    """
-    Submenu de missões.
-    Controla as escolhas e delega para funções específicas.
-    """
+    """Submenu de missões."""
     while True:
         print("\n=== Missão ===")
         print(f"Dificuldade atual: {jogo.missao_config['dificuldade']}")
@@ -49,6 +48,7 @@ def escolher_dificuldade(jogo) -> None:
     print("[2] Média")
     print("[3] Difícil")
     op = input("> ").strip()
+
     mapa = {"1": "Fácil", "2": "Média", "3": "Difícil"}
     dif = mapa.get(op)
 
@@ -72,6 +72,7 @@ def escolher_cenario(jogo) -> None:
     print("[4] Ruínas")
 
     op = input("> ").strip()
+
     mapa = {"1": "Trilha", "2": "Floresta", "3": "Caverna", "4": "Ruínas"}
     cen = mapa.get(op)
 
@@ -83,6 +84,43 @@ def escolher_cenario(jogo) -> None:
 
 
 # -----------------------------------------------------
+#        GERADOR DE INIMIGOS POR CENÁRIO
+# -----------------------------------------------------
+
+
+def gerar_inimigo_por_cenario(cenario):
+    mapa = {
+        "Trilha": [Goblin],
+        "Floresta": [Goblin, Ladrao],
+        "Caverna": [Ladrao, Golem],
+        "Ruínas": [Golem, Demonio],
+    }
+
+    lista = mapa.get(cenario, [Goblin])
+    classe_escolhida = random.choice(lista)
+    return classe_escolhida()
+
+
+# -----------------------------------------------------
+#        APLICAR DIFICULDADE
+# -----------------------------------------------------
+
+
+def aplicar_dificuldade(inimigo, dificuldade):
+    if dificuldade == "Média":
+        inimigo.vida = int(inimigo.vida * 1.2)
+        inimigo.ataque = int(inimigo.ataque * 1.2)
+        inimigo.defesa = int(inimigo.defesa * 1.2)
+
+    elif dificuldade == "Difícil":
+        inimigo.vida = int(inimigo.vida * 1.5)
+        inimigo.ataque = int(inimigo.ataque * 1.5)
+        inimigo.defesa = int(inimigo.defesa * 1.5)
+
+    return inimigo
+
+
+# -----------------------------------------------------
 #             PRÉ-VISUALIZAÇÃO DA MISSÃO
 # -----------------------------------------------------
 
@@ -91,12 +129,12 @@ def preview_missao(jogo) -> None:
     print("\nPré-visualização da Missão")
     print(f"- Dificuldade: {jogo.missao_config['dificuldade']}")
     print(f"- Cenário:     {jogo.missao_config['cenario']}")
-    print("- Inimigos e recompensas: (em breve)")
-    print("- Regras de combate: (em breve)")
+    print("- Inimigos e recompensas: Gerados dinamicamente")
+    print("- Regras de combate: Turnos alternados e uso de itens")
 
 
 # -----------------------------------------------------
-#             PARTE 3 — COMBATE DINÂMICO
+#                 COMBATE DINÂMICO
 # -----------------------------------------------------
 
 
@@ -105,26 +143,29 @@ def iniciar_missao(jogo):
         print("Crie um personagem antes de iniciar uma missão.")
         return
 
-    # Inicializa inventário se não existir
-    inventario = jogo.personagem_obj.inventario
+    jogador = jogo.personagem_obj
+    inventario = jogador.inventario
 
-    # Se for a primeira missão, dar poções iniciais
+    # Poções iniciais caso inventário esteja vazio
     if len(inventario.itens) == 0:
         inventario.adicionar_item(Item("Poção de Cura", 30))
         inventario.adicionar_item(Item("Poção de Cura", 30))
 
-    jogador = jogo.personagem_obj
+    # Gerar inimigo real
+    cenario = jogo.missao_config["cenario"]
+    dificuldade = jogo.missao_config["dificuldade"]
 
-    inimigo = type(
-        "InimigoSimulado", (), {"nome": "Goblin", "vida": 60, "ataque": 8, "defesa": 3}
-    )()
+    inimigo = gerar_inimigo_por_cenario(cenario)
+    inimigo = aplicar_dificuldade(inimigo, dificuldade)
+
+    print(f"\nVocê encontrou um {inimigo.nome}!")
 
     turno = 1
-    print("\nIniciando missão...")
     jogo.logger.log_batalha(
-        f"Missão iniciada — {jogo.missao_config['dificuldade']} / {jogo.missao_config['cenario']}"
+        f"Missão iniciada — {dificuldade} / {cenario} — Inimigo: {inimigo.nome}"
     )
 
+    # ===== LOOP DO COMBATE =====
     while jogador.vida > 0 and inimigo.vida > 0:
         print(f"\n--- Turno {turno} ---")
         print(f"{jogador.nome} HP: {jogador.vida} | {inimigo.nome} HP: {inimigo.vida}")
@@ -133,8 +174,12 @@ def iniciar_missao(jogo):
         print("[1] Atacar")
         print("[2] Usar item")
         print("[3] Fugir")
+
         acao = input("> ").strip()
 
+        # ----------------------------------
+        # ATAQUE DO JOGADOR
+        # ----------------------------------
         if acao == "1":
             dano = max(jogador.ataque - inimigo.defesa, 0)
             inimigo.vida -= dano
@@ -144,7 +189,7 @@ def iniciar_missao(jogo):
         elif acao == "2":
             usar_item_em_combate(jogador, jogo)
             turno += 1
-            continue  # inimigo não perde turno
+            continue
 
         elif acao == "3":
             print("Você fugiu!")
@@ -155,8 +200,9 @@ def iniciar_missao(jogo):
             print("Ação inválida!")
             continue
 
-        # Ataque inimigo
-        # Ataque inimigo — garante pelo menos 1 de dano
+        # ----------------------------------
+        # ATAQUE DO INIMIGO
+        # ----------------------------------
         if inimigo.vida > 0:
             dano_inimigo = max(inimigo.ataque - jogador.defesa, 1)
             jogador.vida -= dano_inimigo
@@ -167,6 +213,9 @@ def iniciar_missao(jogo):
 
         turno += 1
 
+    # ----------------------------------
+    # RESULTADO FINAL
+    # ----------------------------------
     resultado = "Vitória" if jogador.vida > 0 else "Derrota"
     print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
     jogo.logger.log_batalha(f"Resultado: {resultado}")
@@ -203,6 +252,7 @@ def usar_item_em_combate(jogador, jogo):
 
     jogador.vida += item.valor
     print(f"Você usou {item.nome} e recuperou {item.valor} HP!")
+
     jogo.logger.log_batalha(f"{jogador.nome} usou {item.nome} (+{item.valor} HP).")
     inventario.remover_item(item)
 
@@ -215,5 +265,6 @@ def usar_item_em_combate(jogador, jogo):
 def ajuda_missao() -> None:
     print("\nAjuda — Missão")
     print("- Selecione dificuldade e cenário.")
-    print("- Durante a missão, use [1] Atacar, [2] Usar item, [3] Fugir.")
-    print("- Poções curam HP fixo.")
+    print("- Cada cenário tem seus inimigos específicos.")
+    print("- Dificuldade aumenta vida, ataque e defesa do inimigo.")
+    print("- Use poções no combate quando necessário.")

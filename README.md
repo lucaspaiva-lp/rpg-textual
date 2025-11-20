@@ -87,6 +87,30 @@ O jogo permite criar personagens, enfrentar inimigos, realizar missões e salvar
 
 ---
 
+## 👥 Equipe
+
+**[@Mateus Alves](https://github.com/AlvesTK)** — Desenvolvimento de Personagens
+
+**[@Rodrigo Moraes](https://github.com/RodrigoDevBack)** — Desenvolvimento Geral, Refatoração e Github
+
+**[@Guilherme da Silva](https://github.com/Gohanphp)** — Desenvolvimento de Inimigos
+
+**[@Lucas Paiva](https://github.com/lucaspaiva-lp-lp)** — Desenvolvimento Geral, Refatoração, Organização, Integração, Documentação
+
+**[@Maria Eduarda](https://github.com/mariaeduarda63)** — Desenvolvimento de Missões
+
+**[@Nicolas](https://github.com/nicolas021007)** — Desenvolvimento de Inimigos
+
+**[@Rian Alves](https://github.com/RianAlvesTi)** — Desenvolvimento de Missões
+
+**[@Alexandre Arcanjo](https://github.com/alexandrexande)** — Desenvolvimento do Menu
+
+**[@Felipe Gonçalves](https://github.com/FIGFelip)** — Desenvolvimento de Personagens
+
+**[@Cauan Arnoldo](https://github.com/Camp-1)** — Desenvolvimento de Inimigos
+
+---
+
 ## 📚 Documentação Completa
 
 Para informações detalhadas sobre cada módulo, consulte a pasta `docs/readme/`:

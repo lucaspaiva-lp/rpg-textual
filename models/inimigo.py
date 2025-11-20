@@ -3,13 +3,22 @@ from .base import Entidade
 
 
 class Inimigo(Entidade):
-    def __init__(self, nome, vida, ataque, defesa, efeitos, nome_ataque):
+    def __init__(self, nome, vida, ataque, defesa, efeitos, nome_ataque, drop_item):
         self.nome = nome
         self.vida = vida
         self.ataque = ataque
         self.defesa = defesa
         self.efeitos = {"Sangramento": {"dano": 2, "turnos": 3}}
         self.nome_ataque = nome_ataque
+        self drop_item = drop_item
+
+        self.tabela_drop = [
+            {"item:" Item("Poção de Vida", 30), "chance:" 50},
+            {"item:" Item("Poção Forte", 60), "chance:" 25},
+            {"item:" Item("Moeda Antiga", 0), "chance:" 10},
+            {"item:" Item("Adaga do ladrão", 1), "chance:" 33},
+            {"item:" Item("Chifre do demônio", 1), "chance:" 12}
+        ]
 
     def calcular_dano_base(self):
 
@@ -28,6 +37,10 @@ class Inimigo(Entidade):
     def esta_vivo(self):
 
         return self.vida > 0
+
+
+    def tabela_drop(self)
+        return self._tabela_drop
 
 
 class Goblin(Inimigo):

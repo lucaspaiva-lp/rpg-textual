@@ -232,3 +232,42 @@ class Jogo:
             salvamento.menu_carregar(self)
         except Exception as e:
             print(f"[ERRO] menu_carregar: {e}")
+
+
+
+
+
+ # Loop de combate simples
+        while jogador.vida > 0 and inimigo.vida > 0:
+            print(f"\n--- Turno {turno} ---")
+
+            # Ataque do jogador
+            dano_jogador = max(jogador.ataque - inimigo.defesa, 0)
+            inimigo.vida -= dano_jogador
+            log_batalha.append(
+                f"{jogador.nome} causou {dano_jogador} de dano em {inimigo.nome}."
+            )
+
+            if inimigo.vida <= 0:
+                print(f"{inimigo.nome} foi derrotado!")
+               if itens_dropados:
+            print("\nItens dropados:")
+            for item in itens_dropados:
+                print(f" - {item.get_nome()}")
+                jogador.get_inventario().adicionar_item(item)
+        else:
+            print("Nenhum item foi dropado.")
+
+                break
+
+            
+            dano_inimigo = max(inimigo.ataque - jogador.defesa, 0)
+            jogador.vida -= dano_inimigo
+            log_batalha.append(
+                f"{inimigo.nome} causou {dano_inimigo} de dano em {jogador.nome}."
+            )
+
+            print(
+                f"🧙 {jogador.nome} HP: {jogador.vida} | ⚔️ {inimigo.nome} HP: {inimigo.vida}"
+            )
+            turno += 1

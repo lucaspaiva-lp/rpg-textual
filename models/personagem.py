@@ -1,5 +1,9 @@
 from __future__ import annotations
 import random
+from inventario import Inventario  # se estiver em outro arquivo
+
+
+
 
 class Aventureiro:
     def __init__(self, nome, vida, ataque, defesa, mana=0):
@@ -10,9 +14,13 @@ class Aventureiro:
         self.defesa = defesa
         self.mana = mana
         self.mana_max = mana
-        self.inventario = []
+        self.inventario = Inventario()
         self.nivel = 1
         self.xp = 0
+       
+
+self.inventario = Inventario()
+
 
     def get_ataque(self):
         return self.ataque
@@ -24,14 +32,14 @@ class Aventureiro:
         self.mana = min(mana, self.mana_max)
     
     def get_inventario(self):
-        return self.inventario
+        return self.inventario.listar_itens()
     
     def adicionar_item(self, item):
-        self.inventario.append(item)
+    self.inventario.adicionar_item(item)
 
     def remover_item(self, item):
-        if item in self.inventario:
-            self.inventario.remove(item)
+    self.inventario.remover_item(item)
+
 
     def receber_dano(self, dano):
         dano_final = max(0, dano - self.defesa)
@@ -66,6 +74,22 @@ class Aventureiro:
 
         self.vida = self.vida_max
         self.mana = self.mana_max
+
+
+    def dropar_itens(self, Aventureiro):
+        Itens_dropados = []
+
+        for entrada in self.tabela_drop:
+            item = entrada["item"]
+            chance = entrada["chance"]
+
+            rolagem = random.randint(1, 100)
+            if rolagem <= chance:
+                heroi.adicionar_item(item)
+                itens_dropados.append(item)
+
+        return itens_dropados
+
     
 
     def usar_item(self, nome_item: str):

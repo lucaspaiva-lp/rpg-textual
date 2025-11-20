@@ -1,5 +1,7 @@
 from __future__ import annotations
 import random
+from models.inventario import Inventario  # ← necessário
+
 
 class Aventureiro:
     def __init__(self, nome, vida, ataque, defesa, mana=0):
@@ -10,28 +12,27 @@ class Aventureiro:
         self.defesa = defesa
         self.mana = mana
         self.mana_max = mana
-        self.inventario = []
+        self.inventario = Inventario()  # ← corrigido
         self.nivel = 1
         self.xp = 0
 
     def get_ataque(self):
         return self.ataque
-    
+
     def get_mana(self):
         return self.mana
-    
+
     def set_mana(self, mana):
         self.mana = min(mana, self.mana_max)
-    
+
     def get_inventario(self):
         return self.inventario
-    
+
     def adicionar_item(self, item):
-        self.inventario.append(item)
+        self.inventario.adicionar_item(item)  # ← corrigido
 
     def remover_item(self, item):
-        if item in self.inventario:
-            self.inventario.remove(item)
+        self.inventario.remover_item(item)  # ← corrigido
 
     def receber_dano(self, dano):
         dano_final = max(0, dano - self.defesa)
@@ -66,15 +67,14 @@ class Aventureiro:
 
         self.vida = self.vida_max
         self.mana = self.mana_max
-    
 
     def usar_item(self, nome_item: str):
         """Tenta usar um item do inventário."""
-        for item in self.inventario:
+        for item in self.inventario.itens:  # ← corrigido
             if item.nome.lower() == nome_item.lower():
                 if hasattr(item, "usar"):
                     cura = item.usar(self)
-                    self.inventario.remove(item)
+                    self.inventario.remover_item(item)  # ← corrigido
                     return f"Você usou {item.nome} e recuperou {cura} de vida."
                 return "Este item não pode ser usado."
         return "Item não encontrado no inventário."

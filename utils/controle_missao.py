@@ -106,14 +106,12 @@ def iniciar_missao(jogo):
         return
 
     # Inicializa inventário se não existir
-    if (
-        not hasattr(jogo.personagem_obj, "inventario")
-        or jogo.personagem_obj.inventario is None
-    ):
-        jogo.personagem_obj.inventario = Inventario()
-        # Itens iniciais
-        jogo.personagem_obj.inventario.adicionar_item(Item("Poção de Cura", 30))
-        jogo.personagem_obj.inventario.adicionar_item(Item("Poção de Cura", 30))
+    inventario = jogo.personagem_obj.inventario
+
+    # Se for a primeira missão, dar poções iniciais
+    if len(inventario.itens) == 0:
+        inventario.adicionar_item(Item("Poção de Cura", 30))
+        inventario.adicionar_item(Item("Poção de Cura", 30))
 
     jogador = jogo.personagem_obj
 

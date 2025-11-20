@@ -1,5 +1,6 @@
 from models.inventario import Inventario, Item
 from models.inimigo import Goblin, Ladrao, Golem, Demonio
+from models.itens import PocaoCura, PocaoForca
 import random
 
 # =====================================================
@@ -220,6 +221,36 @@ def iniciar_missao(jogo):
     print(f"\n=== Fim da Missão ===\nResultado: {resultado}")
     jogo.logger.log_batalha(f"Resultado: {resultado}")
 
+    # 👉 Recompensa somente se vencer
+    if resultado == "Vitória":
+        recompensar_jogador(jogador, dificuldade)
+
+
+def recompensar_jogador(jogador, dificuldade):
+    print("\n🎁 Recompensas da missão:")
+
+    dif = dificuldade.lower()
+
+    if dif == "fácil":
+        jogador.adicionar_item(PocaoCura())
+        print("→ 1x Poção de Cura")
+
+    elif dif == "média":
+        jogador.adicionar_item(PocaoCura())
+        jogador.adicionar_item(PocaoForca())
+        print("→ 1x Poção de Cura")
+        print("→ 1x Poção de Força")
+
+    elif dif == "difícil":
+        jogador.adicionar_item(PocaoForca())
+        jogador.adicionar_item(PocaoForca())
+        print("→ 2x Poção de Força")
+
+    else:
+        print("Nenhuma recompensa para essa dificuldade.")
+
+    print("✔ Recompensas adicionadas ao inventário!")
+
 
 # -----------------------------------------------------
 #             USO DE ITENS DURANTE COMBATE
@@ -235,7 +266,10 @@ def usar_item_em_combate(jogador, jogo):
 
     print("\n=== Inventário ===")
     for i, item in enumerate(inventario.itens, 1):
-        print(f"[{i}] {item.nome} (cura {item.valor} HP)")
+        if item.nome == "Poção de Força":
+            print(f"[{i}] {item.nome} (+5 ATK)")
+        else:
+            print(f"[{i}] {item.nome} (cura {item.valor} HP)")
     print("[0] Cancelar")
 
     op = input("> ").strip()
@@ -250,10 +284,18 @@ def usar_item_em_combate(jogador, jogo):
         print("Item inválido!")
         return
 
-    jogador.vida += item.valor
-    print(f"Você usou {item.nome} e recuperou {item.valor} HP!")
+    # Poção de força
+    if item.nome == "Poção de Força":
+        jogador.ataque += 5
+        print("💥 Seu ataque aumentou em +5 temporariamente!")
+        jogo.logger.log_batalha(f"{jogador.nome} usou Poção de Força (+5 ATK).")
 
-    jogo.logger.log_batalha(f"{jogador.nome} usou {item.nome} (+{item.valor} HP).")
+    # Poções de cura normais
+    else:
+        jogador.vida += item.valor
+        print(f"Você usou {item.nome} e recuperou {item.valor} HP!")
+        jogo.logger.log_batalha(f"{jogador.nome} usou {item.nome} (+{item.valor} HP).")
+
     inventario.remover_item(item)
 
 

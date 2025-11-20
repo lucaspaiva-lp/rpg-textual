@@ -99,7 +99,7 @@ O jogo permite criar personagens, enfrentar inimigos, realizar missões e salvar
 
 **[@Maria Eduarda](https://github.com/mariaeduarda63)** — Desenvolvimento de Missões
 
-**[@Nicolas](https://github.com/nicolas021007)** — Desenvolvimento de Inimigos
+**[@Nicolas Rosa](https://github.com/nicolas021007)** — Desenvolvimento de Inimigos
 
 **[@Rian Alves](https://github.com/RianAlvesTi)** — Desenvolvimento de Missões
 

@@ -1,5 +1,3 @@
-# models/itens.py
-
 ITENS = {
     "pocao_pequena": {"nome": "Poção Pequena", "cura": 20},
     "pocao_media": {"nome": "Poção Média", "cura": 40},

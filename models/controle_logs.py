@@ -1,6 +1,3 @@
-# models/controle_logs.py
-
-
 def menu_logs(jogo):
     if not hasattr(jogo, "logger") or jogo.logger is None:
         print("⚠ Logger não inicializado.")

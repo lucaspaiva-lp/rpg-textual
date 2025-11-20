@@ -150,3 +150,48 @@ class Mago(Aventureiro):
         if dano > 0:
             return dano
         return self.calcular_dano_basico(alvo)
+
+
+class Arqueiro(Aventureiro):
+    def __init__(self, nome):
+        super().__init__(nome, vida=90, ataque=13, defesa=6, mana=40)
+
+    def flecha_critica(self, alvo):
+        dano = self.ataque * 2
+        alvo.receber_dano(dano)
+        return dano
+
+    def chuva_de_flechas(self, alvo):
+        total = 0
+        for _ in range(3):
+            dano = max(0, (self.ataque // 2) - alvo.defesa)
+            alvo.receber_dano(dano)
+            total += dano
+        return total
+
+    def atacar(self, alvo):
+        escolha = random.choice(["critico", "chuva"])
+        if escolha == "critico":
+            return self.flecha_critica(alvo)
+        return self.chuva_de_flechas(alvo)
+
+
+class Ladrao(Aventureiro):
+    def __init__(self, nome):
+        super().__init__(nome, vida=85, ataque=12, defesa=4, mana=30)
+
+    def ataque_furtivo(self, alvo):
+        dano = self.ataque * 2.2
+        alvo.receber_dano(dano)
+        return dano
+
+    def cortar_garganta(self, alvo):
+        dano = self.ataque * 1.2
+        alvo.receber_dano(dano)
+        return dano
+
+    def atacar(self, alvo):
+        chance = random.random()
+        if chance < 0.35:
+            return self.ataque_furtivo(alvo)
+        return self.cortar_garganta(alvo)

@@ -63,16 +63,16 @@ def escolher_arquetipo(jogo) -> None:
     print("\nArquétipos disponíveis:")
     print("[1] Guerreiro")
     print("[2] Mago")
-    print("[3] Arqueiro (indisponível)")
-    print("[4] Curandeiro (indisponível)")
+    print("[3] Arqueiro")
+    print("[4] Ladrão")
 
     op = input("> ").strip()
 
     mapa = {
         "1": "Guerreiro",
         "2": "Mago",
-        "3": "Arqueiro",  # ainda não implementado
-        "4": "Curandeiro",  # ainda não implementado
+        "3": "Arqueiro",
+        "4": "Ladrão",
     }
 
     arq = mapa.get(op)
@@ -103,19 +103,24 @@ def confirmar_criacao(jogo) -> None:
     print("\nPersonagem criado com sucesso!")
     print(f"Nome: {nome} | Arquétipo: {arq}")
 
-    # ================================
-    # Instancia a classe correta
-    # ================================
     if arq == "Guerreiro":
         jogo.personagem_obj = Guerreiro(nome)
     elif arq == "Mago":
         jogo.personagem_obj = Mago(nome)
+    elif arq == "Arqueiro":
+        from models.personagem import Arqueiro
+
+        jogo.personagem_obj = Arqueiro(nome)
+    elif arq == "Ladrão":
+        from models.personagem import Ladrao
+
+        jogo.personagem_obj = Ladrao(nome)
     else:
-        print("⚠ Arquétipo ainda não implementado. Usando Guerreiro como base.")
+        print("⚠ Arquétipo desconhecido. Usando Guerreiro como fallback.")
         jogo.personagem_obj = Guerreiro(nome)
 
     print("✔ Objeto do personagem criado!")
-    print(f"Atributos iniciais:")
+    print(f"Atributos:")
     print(f"Vida: {jogo.personagem_obj.vida}")
     print(f"Ataque: {jogo.personagem_obj.ataque}")
     print(f"Defesa: {jogo.personagem_obj.defesa}")

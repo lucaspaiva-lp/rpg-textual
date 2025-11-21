@@ -1,13 +1,23 @@
-# ignorar pasta de saves (não deve ir pro GitHub)
+# ignorar pasta de saves e logs (não devem ir pro GitHub)
 saves/**
 logs/**
+
+# ignorar ambientes virtuais
+venv/**
+
+# ignorar pastas geradas pelo PyInstaller
+build/**
+dist/**
+*.spec
+
 # ignorar pycache do Python
 __pycache__/
-/models/__pycache__
+models/__pycache__/
 
 # ignorar configs locais do VSCode
 .vscode/
 
 # ignorar arquivos temporários
-**.tmp
-**.log
+*.tmp
+*.log
+*.bak
